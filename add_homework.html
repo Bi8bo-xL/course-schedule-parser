@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>添加作业</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 50px 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; margin-bottom: 10px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover { opacity: 0.9; }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+        }
+        .message { 
+            margin-top: 15px; 
+            padding: 10px; 
+            border-radius: 8px; 
+            display: none;
+        }
+        .success { background: #d4edda; color: #155724; display: block; }
+        .error { background: #f8d7da; color: #721c24; display: block; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>➕ 添加新作业</h1>
+    <p style="color: #666; margin-bottom: 25px;">填写作业信息，DDL提醒自动生成</p>
+
+    <form id="homeworkForm">
+        <div class="form-group">
+            <label>📝 作业名称 *</label>
+            <input type="text" id="name" required placeholder="例：计算机网络实验报告">
+        </div>
+        <div class="form-group">
+            <label>📚 所属课程</label>
+            <input type="text" id="course" placeholder="例：计算机网络（可选）">
+        </div>
+        <div class="form-group">
+            <label>📅 截止日期 *</label>
+            <input type="date" id="due" required>
+        </div>
+        <button type="submit">✅ 添加作业</button>
+    </form>
+
+    <div id="message" class="message"></div>
+    <a href="course_schedule.html" class="back-link">← 返回课表</a>
+</div>
+
+<script>
+    document.getElementById('homeworkForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const course = document.getElementById('course').value;
+        const due = document.getElementById('due').value;
+
+        if (!name || !due) {
+            showMessage('请填写完整信息', 'error');
+            return;
+        }
+
+        // 读取现有作业
+        let homework = [];
+        try {
+            const existing = localStorage.getItem('homework_temp');
+            if (existing) homework = JSON.parse(existing);
+        } catch(e) {}
+
+        // 添加新作业
+        homework.push({
+            name: name,
+            course: course || '未分类',
+            due: due,
+            created: new Date().toISOString()
+        });
+
+        // 保存
+        localStorage.setItem('homework_temp', JSON.stringify(homework));
+        showMessage('✅ 作业添加成功！返回课表页面刷新即可看到', 'success');
+
+        // 清空表单
+        document.getElementById('homeworkForm').reset();
+
+        // 3秒后自动返回
+        setTimeout(() => {
+            window.location.href = 'course_schedule.html';
+        }, 2000);
+    });
+
+    function showMessage(msg, type) {
+        const msgDiv = document.getElementById('message');
+        msgDiv.textContent = msg;
+        msgDiv.className = 'message ' + type;
+        setTimeout(() => {
+            msgDiv.className = 'message';
+        }, 3000);
+    }
+</script>
+</body>
+</html>
