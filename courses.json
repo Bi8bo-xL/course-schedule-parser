@@ -1,0 +1,146 @@
+[
+  {
+    "name": "计算机网络",
+    "weekday": 1,
+    "start_slot": 1,
+    "end_slot": 2,
+    "room": "n113",
+    "raw": "周一1-2节 计算机网络 n113"
+  },
+  {
+    "name": "人工智能",
+    "weekday": 1,
+    "start_slot": 3,
+    "end_slot": 4,
+    "room": "n522",
+    "raw": "周一3-4节 人工智能 n522"
+  },
+  {
+    "name": "五彩缤纷的现代多媒体生活（通核）",
+    "weekday": 1,
+    "start_slot": 5,
+    "end_slot": 6,
+    "room": "8302",
+    "raw": "周一5-6节 五彩缤纷的现代多媒体生活（通核）8302"
+  },
+  {
+    "name": "计算机组成原理",
+    "weekday": 2,
+    "start_slot": 1,
+    "end_slot": 2,
+    "room": "n217",
+    "raw": "周二1-2节 计算机组成原理 n217"
+  },
+  {
+    "name": "数据库原理",
+    "weekday": 2,
+    "start_slot": 3,
+    "end_slot": 4,
+    "room": "n213",
+    "raw": "周二3-4节 数据库原理 n213"
+  },
+  {
+    "name": "社会调查方法（混合课堂）",
+    "weekday": 2,
+    "start_slot": 5,
+    "end_slot": 6,
+    "room": "7307",
+    "raw": "周二5-6节 社会调查方法（混合课堂）7307"
+  },
+  {
+    "name": "毛泽东思想和中国特色社会主义",
+    "weekday": 2,
+    "start_slot": 7,
+    "end_slot": 8,
+    "room": "n111",
+    "raw": "周二7-8节 毛泽东思想和中国特色社会主义 n111"
+  },
+  {
+    "name": "Java语言程序设计",
+    "weekday": 3,
+    "start_slot": 1,
+    "end_slot": 2,
+    "room": "n213",
+    "raw": "周三1-2节 Java语言程序设计 n213"
+  },
+  {
+    "name": "机器学习",
+    "weekday": 3,
+    "start_slot": 3,
+    "end_slot": 4,
+    "room": "n323",
+    "raw": "周三3-4节 机器学习 n323"
+  },
+  {
+    "name": "形势与政策（4）",
+    "weekday": 3,
+    "start_slot": 5,
+    "end_slot": 6,
+    "room": "n215",
+    "raw": "周三5-6节 形势与政策（4）n215"
+  },
+  {
+    "name": "Java语言程序设计",
+    "weekday": 4,
+    "start_slot": 1,
+    "end_slot": 2,
+    "room": "n213",
+    "raw": "周四1-2节 Java语言程序设计 n213"
+  },
+  {
+    "name": "数据库原理",
+    "weekday": 4,
+    "start_slot": 3,
+    "end_slot": 4,
+    "room": "n213",
+    "raw": "周四3-4节 数据库原理 n213"
+  },
+  {
+    "name": "计算机网络",
+    "weekday": 4,
+    "start_slot": 5,
+    "end_slot": 6,
+    "room": "n217",
+    "raw": "周四5-6节 计算机网络 n217"
+  },
+  {
+    "name": "计算机组成原理",
+    "weekday": 4,
+    "start_slot": 11,
+    "end_slot": 12,
+    "room": "n112",
+    "raw": "周四11-12节 计算机组成原理 n112"
+  },
+  {
+    "name": "Python程序设计",
+    "weekday": 5,
+    "start_slot": 1,
+    "end_slot": 2,
+    "room": "n113",
+    "raw": "周五1-2节 Python程序设计 n113"
+  },
+  {
+    "name": "毛泽东思想和中国特色社会主义",
+    "weekday": 5,
+    "start_slot": 3,
+    "end_slot": 4,
+    "room": "n111",
+    "raw": "周五3-4节 毛泽东思想和中国特色社会主义 n111"
+  },
+  {
+    "name": "传播心理学",
+    "weekday": 5,
+    "start_slot": 5,
+    "end_slot": 6,
+    "room": "8214",
+    "raw": "周五5-6节 传播心理学 8214"
+  },
+  {
+    "name": "大学体育4",
+    "weekday": 5,
+    "start_slot": 7,
+    "end_slot": 8,
+    "room": "舞二",
+    "raw": "周五7-8节 大学体育4 舞二"
+  }
+]

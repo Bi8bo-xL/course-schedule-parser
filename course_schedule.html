@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的课程表</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 28px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+        .stat-card strong { font-size: 20px; margin-right: 5px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        td {
+            border: 1px solid #e0e0e0;
+            padding: 12px 8px;
+            vertical-align: top;
+            min-width: 120px;
+            height: 100px;
+        }
+        .time-col {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+            width: 120px;
+            text-align: center;
+        }
+        .course {
+            background: #e8f0fe;
+            border-radius: 8px;
+            padding: 8px;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .course:hover { transform: scale(1.02); background: #d4e4fc; }
+        .course-name { font-weight: 700; color: #1a73e8; font-size: 14px; margin-bottom: 5px; }
+        .course-room { font-size: 11px; color: #666; margin-top: 5px; }
+        .empty { color: #ccc; font-size: 12px; text-align: center; padding: 20px 0; }
+        .footer {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+        @media (max-width: 768px) {
+            .course-name { font-size: 11px; }
+            .time-col { width: 80px; font-size: 11px; }
+            td { padding: 6px; height: 80px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📚 我的课程表</h1>
+        <p>智能解析 · 一键生成</p>
+
+        <div class="stats">
+            <div class="stat-card">📖 总课程 <strong>18</strong> 门</div>
+            <div class="stat-card">📅 周一 <strong>3</strong> 节</div>
+            <div class="stat-card">📅 周二 <strong>4</strong> 节</div>
+            <div class="stat-card">📅 周三 <strong>3</strong> 节</div>
+            <div class="stat-card">📅 周四 <strong>4</strong> 节</div>
+            <div class="stat-card">📅 周五 <strong>4</strong> 节</div>
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr><th></th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td class="time-col">08:00-09:40<br><span style="font-size:10px">第1-2节</span></td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">计算机网络</div>
+                        <div class="course-room">📍 n113</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">计算机组成原理</div>
+                        <div class="course-room">📍 n217</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">Java语言程序设计</div>
+                        <div class="course-room">📍 n213</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">Java语言程序设计</div>
+                        <div class="course-room">📍 n213</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">Python程序设计</div>
+                        <div class="course-room">📍 n113</div>
+                    </div>
+                </td>
+</tr>
+
+            <tr>
+                <td class="time-col">09:50-11:30<br><span style="font-size:10px">第3-4节</span></td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">人工智能</div>
+                        <div class="course-room">📍 n522</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">数据库原理</div>
+                        <div class="course-room">📍 n213</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">机器学习</div>
+                        <div class="course-room">📍 n323</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">数据库原理</div>
+                        <div class="course-room">📍 n213</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">毛泽东思想和中国特色社会主义</div>
+                        <div class="course-room">📍 n111</div>
+                    </div>
+                </td>
+</tr>
+
+            <tr>
+                <td class="time-col">13:30-15:10<br><span style="font-size:10px">第5-6节</span></td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">五彩缤纷的现代多媒体生活（通核）</div>
+                        <div class="course-room">📍 8302</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">社会调查方法（混合课堂）</div>
+                        <div class="course-room">📍 7307</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">形势与政策（4）</div>
+                        <div class="course-room">📍 n215</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">计算机网络</div>
+                        <div class="course-room">📍 n217</div>
+                    </div>
+                </td>
+
+                <td>
+                    <div class="course">
+                        <div class="course-name">传播心理学</div>
+                        <div class="course-room">📍 8214</div>
+                    </div>
+                </td>
+</tr>
+
+            <tr>
+                <td class="time-col">15:20-17:00<br><span style="font-size:10px">第7-8节</span></td>
+<td><div class="empty">—</div></td>
+                <td>
+                    <div class="course">
+                        <div class="course-name">毛泽东思想和中国特色社会主义</div>
+                        <div class="course-room">📍 n111</div>
+                    </div>
+                </td>
+<td><div class="empty">—</div></td><td><div class="empty">—</div></td>
+                <td>
+                    <div class="course">
+                        <div class="course-name">大学体育4</div>
+                        <div class="course-room">📍 舞二</div>
+                    </div>
+                </td>
+</tr>
+
+            <tr>
+                <td class="time-col">18:30-20:10<br><span style="font-size:10px">第9-10节</span></td>
+<td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td></tr>
+
+            <tr>
+                <td class="time-col">20:20-22:00<br><span style="font-size:10px">第11-12节</span></td>
+<td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td>
+                <td>
+                    <div class="course">
+                        <div class="course-name">计算机组成原理</div>
+                        <div class="course-room">📍 n112</div>
+                    </div>
+                </td>
+<td><div class="empty">—</div></td></tr>
+
+        </tbody>
+    </table>
+    <div class="footer">
+        生成时间: 2026-05-30 14:33:25
+    </div>
+</div>
+</body>
+</html>
