@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这节课值多少钱 - 课程价值计算器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+        .card-header h1 { font-size: 28px; margin-bottom: 8px; }
+        .value-number {
+            font-size: 72px;
+            font-weight: bold;
+            color: #e67e22;
+            margin: 20px 0;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #e67e22;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .day-value {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>💰 这节课值多少钱？</h1>
+            <p>认真上课就是给自己赚钱</p>
+        </div>
+        <div class="report-content" style="padding: 30px; text-align: center;">
+
+            <div class="value-number">¥9.26</div>
+            <p style="color: #666; margin-bottom: 10px;">每节课的价值</p>
+
+            <div class="info-box">
+                <p><strong>📊 计算依据</strong></p>
+                <p>学年学费：¥6,000 元</p>
+                <p>每周课程：36 节</p>
+                <p>学期周数：18 周</p>
+                <p>一学期总课时：648 节</p>
+            </div>
+
+            <div class="warning-box">
+                <strong>💡 逃课成本</strong><br>
+                🔥 逃一节课 = 白扔 <strong style="color: #e67e22; font-size: 20px;">¥9.26</strong><br>
+                🎉 一学期全勤 = 赚回 <strong style="color: #27ae60;">¥6,000</strong>
+            </div>
+
+            <div class="info-box">
+                <p><strong>📅 每天的价值</strong></p>
+
+                <div class="day-value">
+                    <span>周一</span>
+                    <span>6节课</span>
+                    <span style="color: #e67e22;">¥55.56</span>
+                </div>
+
+                <div class="day-value">
+                    <span>周二</span>
+                    <span>8节课</span>
+                    <span style="color: #e67e22;">¥74.07</span>
+                </div>
+
+                <div class="day-value">
+                    <span>周三</span>
+                    <span>6节课</span>
+                    <span style="color: #e67e22;">¥55.56</span>
+                </div>
+
+                <div class="day-value">
+                    <span>周四</span>
+                    <span>8节课</span>
+                    <span style="color: #e67e22;">¥74.07</span>
+                </div>
+
+                <div class="day-value">
+                    <span>周五</span>
+                    <span>8节课</span>
+                    <span style="color: #e67e22;">¥74.07</span>
+                </div>
+
+            </div>
+
+            <div class="warning-box">
+                <strong>🤔 换个角度</strong><br>
+                如果每门课逃课5% <span style="font-size: 12px;">（约32节课）</span><br>
+                你将浪费约 <strong style="color: #e74c3c;">¥300.00</strong><br>
+                <span style="font-size: 12px;">≈ 15 杯奶茶 / 30 顿食堂午饭</span>
+            </div>
+
+            <button onclick="location.reload()">🔄 重新计算</button>
+            <p style="margin-top: 20px; font-size: 12px; color: #999;">
+                💡 提示：可以修改本文件第13-14行的 tuition 和 weeks 参数
+            </p>
+        </div>
+    </div>
+    <div class="footer">
+        数据来源：courses.json | 生成时间：2026-05-30 15:48:24
+    </div>
+</div>
+</body>
+</html>

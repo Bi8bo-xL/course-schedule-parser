@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习搭子匹配器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        .card-header h1 { font-size: 28px; margin-bottom: 8px; }
+        .stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            background: #f8f9fa;
+        }
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: white;
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+        }
+        .tab-content {
+            display: none;
+            padding: 25px 30px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .student-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .student-header {
+            background: #667eea;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .delete-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+        .time-list {
+            padding: 15px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .time-tag {
+            background: #e8f0fe;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #1a73e8;
+        }
+        .no-match {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        textarea {
+            height: 250px;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .example {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            color: #888;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        .schedule-preview {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-top: 10px;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>学习搭子匹配器</h1>
+            <p>录入同学课表，找到和你空闲时间重合的学习搭子</p>
+            <div class="stats" id="statsPanel">
+                <div class="stat-card">同学 <span id="studentCount">0</span> 人</div>
+                <div class="stat-card">共同时段 <span id="matchCount">0</span> 个</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="match">匹配结果</div>
+            <div class="tab" data-tab="add">添加同学</div>
+            <div class="tab" data-tab="list">同学列表</div>
+        </div>
+
+        <div id="matchTab" class="tab-content active">
+            <div id="matchResults"></div>
+        </div>
+
+        <div id="addTab" class="tab-content">
+            <div class="form-group">
+                <label>同学姓名</label>
+                <input type="text" id="studentName" placeholder="例：张三">
+            </div>
+            <div class="form-group">
+                <label>课表内容</label>
+                <textarea id="studentSchedule" placeholder="格式示例：
+周一1-2节 高等数学 教2-101
+周一3-4节 大学英语 文1-203
+周二1-2节 大学物理 理A-305"></textarea>
+                <div class="example">
+                    格式说明：星期 + 节次 + 课程名 + 教室（每行一门课）
+                </div>
+            </div>
+            <button class="btn" onclick="addStudent()">添加同学</button>
+            <button class="btn btn-secondary" onclick="clearForm()">清空</button>
+        </div>
+
+        <div id="listTab" class="tab-content">
+            <div id="studentList"></div>
+        </div>
+
+        <div class="footer">
+            提示：课表数据保存在浏览器中，刷新不会丢失
+        </div>
+    </div>
+</div>
+
+<script>
+    let students = {};
+    let mySchedule = null;
+
+    const weekdayMap = {
+        "周一": 1, "周二": 2, "周三": 3, "周四": 4, "周五": 5, "周六": 6, "周日": 7,
+        "一": 1, "二": 2, "三": 3, "四": 4, "五": 5, "六": 6, "日": 7, "天": 7
+    };
+
+    const weekdayNames = ["", "周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+    const slotNames = {
+        1: "第1-2节 (8:00-9:40)", 2: "第1-2节 (8:00-9:40)",
+        3: "第3-4节 (9:50-11:30)", 4: "第3-4节 (9:50-11:30)",
+        5: "第5-6节 (13:30-15:10)", 6: "第5-6节 (13:30-15:10)",
+        7: "第7-8节 (15:20-17:00)", 8: "第7-8节 (15:20-17:00)",
+        9: "第9-10节 (18:30-20:10)", 10: "第9-10节 (18:30-20:10)",
+        11: "第11-12节 (20:20-22:00)", 12: "第11-12节 (20:20-22:00)"
+    };
+
+    function parseSchedule(text) {
+        const lines = text.trim().split('\n');
+        const courses = [];
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+            const match = line.match(/([周一二三四五六日天]+)(\d+)-(\d+)节\s+(.+?)\s+(\S+)$/);
+            if (match) {
+                let weekdayStr = match[1];
+                let startSlot = parseInt(match[2]);
+                let endSlot = parseInt(match[3]);
+                let name = match[4];
+                let room = match[5];
+                let weekday = null;
+                for (let key in weekdayMap) {
+                    if (weekdayStr.includes(key)) {
+                        weekday = weekdayMap[key];
+                        break;
+                    }
+                }
+                if (weekday && weekday <= 5) {
+                    courses.push({ name, weekday, startSlot, endSlot, room });
+                }
+            }
+        }
+        return courses;
+    }
+
+    function toFreeTime(courses) {
+        const free = {};
+        for (let day = 1; day <= 5; day++) {
+            free[day] = {};
+            for (let slot = 1; slot <= 12; slot++) {
+                free[day][slot] = true;
+            }
+        }
+        for (let c of courses) {
+            for (let slot = c.startSlot; slot <= c.endSlot; slot++) {
+                if (free[c.weekday] && slot <= 12) {
+                    free[c.weekday][slot] = false;
+                }
+            }
+        }
+        return free;
+    }
+
+    function findCommonFreeTime(myCourses, theirCourses) {
+        const myFree = toFreeTime(myCourses);
+        const theirFree = toFreeTime(theirCourses);
+        const common = [];
+        for (let day = 1; day <= 5; day++) {
+            for (let slot = 1; slot <= 12; slot++) {
+                if (myFree[day][slot] && theirFree[day][slot]) {
+                    common.push({
+                        day: day,
+                        dayName: weekdayNames[day],
+                        slot: slot,
+                        slotName: slotNames[slot]
+                    });
+                }
+            }
+        }
+        return common;
+    }
+
+    function loadMySchedule() {
+        const defaultSchedule = `周一1-2节 计算机网络 n113
+周一3-4节 人工智能 n522
+周一5-6节 五彩缤纷的现代多媒体生活（通核）8302
+周二1-2节 计算机组成原理 n217
+周二3-4节 数据库原理 n213
+周二5-6节 社会调查方法（混合课堂）7307
+周二7-8节 毛泽东思想和中国特色社会主义 n111
+周三1-2节 Java语言程序设计 n213
+周三3-4节 机器学习 n323
+周三5-6节 形势与政策（4）n215
+周四1-2节 Java语言程序设计 n213
+周四3-4节 数据库原理 n213
+周四5-6节 计算机网络 n217
+周四11-12节 计算机组成原理 n112
+周五1-2节 Python程序设计 n113
+周五3-4节 毛泽东思想和中国特色社会主义 n111
+周五5-6节 传播心理学 8214
+周五7-8节 大学体育4 舞二`;
+        mySchedule = parseSchedule(defaultSchedule);
+        return mySchedule;
+    }
+
+    function loadData() {
+        const saved = localStorage.getItem('study_buddy_students');
+        if (saved) {
+            students = JSON.parse(saved);
+        }
+        loadMySchedule();
+        renderAll();
+    }
+
+    function saveData() {
+        localStorage.setItem('study_buddy_students', JSON.stringify(students));
+        renderAll();
+    }
+
+    function addStudent() {
+        const name = document.getElementById('studentName').value.trim();
+        const scheduleText = document.getElementById('studentSchedule').value.trim();
+        if (!name) { alert('请输入同学姓名'); return; }
+        if (!scheduleText) { alert('请输入课表内容'); return; }
+        const courses = parseSchedule(scheduleText);
+        if (courses.length === 0) { alert('课表解析失败，请检查格式'); return; }
+        students[name] = { courses: courses, rawText: scheduleText, addedTime: new Date().toISOString() };
+        saveData();
+        clearForm();
+        document.querySelector('.tab[data-tab="match"]').click();
+    }
+
+    function deleteStudent(name) {
+        if (confirm(`确定要删除 ${name} 吗？`)) {
+            delete students[name];
+            saveData();
+        }
+    }
+
+    function clearForm() {
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentSchedule').value = '';
+    }
+
+    function renderMatchResults() {
+        const container = document.getElementById('matchResults');
+        const studentNames = Object.keys(students);
+        if (studentNames.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>还没有同学数据</p><p style="font-size: 14px;">点击「添加同学」录入课表</p></div>';
+            return;
+        }
+        let totalMatches = 0;
+        let html = '';
+        for (let name of studentNames) {
+            const student = students[name];
+            const common = findCommonFreeTime(mySchedule, student.courses);
+            totalMatches += common.length;
+            html += `<div class="student-card">
+                <div class="student-header">
+                    <span>${name}</span>
+                    <button class="delete-btn" onclick="deleteStudent('${name}')">删除</button>
+                </div>`;
+            if (common.length > 0) {
+                common.sort((a, b) => a.day - b.day || a.slot - b.slot);
+                let timeHtml = '';
+                for (let t of common) {
+                    timeHtml += `<div class="time-tag">${t.dayName} ${t.slotName}</div>`;
+                }
+                html += `<div class="time-list">${timeHtml}</div>`;
+            } else {
+                html += `<div class="no-match">暂无共同空闲时间，建议调整课程安排</div>`;
+            }
+            html += `</div>`;
+        }
+        document.getElementById('studentCount').innerText = studentNames.length;
+        document.getElementById('matchCount').innerText = totalMatches;
+        container.innerHTML = html;
+    }
+
+    function renderStudentList() {
+        const container = document.getElementById('studentList');
+        const studentNames = Object.keys(students);
+        if (studentNames.length === 0) {
+            container.innerHTML = '<div class="empty-state"><p>还没有同学</p><p style="font-size: 14px;">点击「添加同学」录入课表</p></div>';
+            return;
+        }
+        let html = '';
+        for (let name of studentNames) {
+            const student = students[name];
+            html += `<div class="student-card">
+                <div class="student-header">
+                    <span>${name}</span>
+                    <button class="delete-btn" onclick="deleteStudent('${name}')">删除</button>
+                </div>
+                <div class="time-list">
+                    <div class="time-tag" style="background:#e0e0e0;">${student.courses.length} 门课程</div>
+                    <div class="time-tag" style="background:#e0e0e0;">${new Date(student.addedTime).toLocaleDateString()}</div>
+                </div>
+                <div class="schedule-preview">
+                    ${student.rawText.split('\n').slice(0, 5).join('<br>')}
+                    ${student.rawText.split('\n').length > 5 ? '<br>...' : ''}
+                </div>
+            </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function renderAll() {
+        renderMatchResults();
+        renderStudentList();
+    }
+
+    function initTabs() {
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabId}Tab`).classList.add('active');
+                if (tabId === 'list') renderStudentList();
+                if (tabId === 'match') renderMatchResults();
+            });
+        });
+    }
+
+    loadData();
+    initTabs();
+</script>
+</body>
+</html>
