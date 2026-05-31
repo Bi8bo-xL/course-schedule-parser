@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3829fdf8-de10-4c49-b7e0-93d7c6e04fe1" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/class_value.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/study_buddy.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_value.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/class_value.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/course_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schedule-parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/schedule-parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/study_buddy.html" beforeDir="false" afterPath="$PROJECT_DIR$/study_buddy.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +96,7 @@
       <option name="presentableId" value="Default" />
       <updated>1780121294816</updated>
       <workItem from="1780121295920" duration="5987000" />
-      <workItem from="1780202806923" duration="1364000" />
+      <workItem from="1780202806923" duration="3556000" />
     </task>
     <servers />
   </component>
@@ -104,6 +107,6 @@
     <SUITE FILE_PATH="coverage/$class_value.coverage" NAME="class_value 覆盖结果" MODIFIED="1780127304433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$study_buddy.coverage" NAME="study_buddy 覆盖结果" MODIFIED="1780203178664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$test.coverage" NAME="test 覆盖结果" MODIFIED="1780121702297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/$schedule_parser.coverage" NAME="schedule-parser 覆盖结果" MODIFIED="1780126566831" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$schedule_parser.coverage" NAME="schedule-parser 覆盖结果" MODIFIED="1780207245660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

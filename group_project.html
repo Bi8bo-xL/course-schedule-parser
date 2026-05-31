@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>📊 小组作业看板</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(145deg, #e8f4f8 0%, #d9eef5 100%);
+            padding: 32px 20px;
+            min-height: 100vh;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .glass-card {
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 36px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.5);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(120deg, #7ab8d4, #a8d8ea);
+            padding: 28px 32px;
+            color: white;
+        }
+        .header h1 { font-size: 28px; display: flex; align-items: center; gap: 10px; }
+        .stats-row { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+        .stat-card { background: rgba(255,255,255,0.25); padding: 6px 18px; border-radius: 40px; }
+        .stat-number { font-size: 24px; font-weight: 600; margin-right: 6px; }
+
+        .section-title { font-size: 18px; font-weight: 600; color: #5a8faa; padding: 20px 24px 8px; display: flex; align-items: center; gap: 8px; }
+        .member-grid { display: flex; gap: 16px; flex-wrap: wrap; padding: 0 24px 20px; }
+        .member-card { background: white; border-radius: 24px; flex: 1; min-width: 160px; overflow: hidden; border: 1px solid rgba(122,184,212,0.3); }
+        .member-name { background: #f0f8fc; padding: 12px 16px; font-weight: 600; color: #5a7a8a; display: flex; justify-content: space-between; }
+        .progress-bar { height: 8px; background: #e0ecf2; border-radius: 10px; margin: 12px 16px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #7ab8d4; border-radius: 10px; width: 0%; }
+        .member-stats { padding: 0 16px 16px; font-size: 13px; color: #8aaec0; }
+
+        .task-list { padding: 0 24px 20px; }
+        .task-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid #e0ecf2; flex-wrap: wrap; }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .task-name { flex: 2; font-weight: 500; color: #5a7a8a; }
+        .task-assignee { flex: 1; color: #8aaec0; font-size: 13px; }
+        .task-deadline { flex: 1; color: #8aaec0; font-size: 12px; }
+        .delete-task { background: #e0ecf2; border: none; padding: 4px 14px; border-radius: 30px; cursor: pointer; font-size: 12px; }
+
+        .btn-group { text-align: center; padding: 12px 24px 20px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn { background: #7ab8d4; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; }
+        .btn-outline { background: white; color: #7ab8d4; border: 1px solid #7ab8d4; }
+        .form-modal { background: white; margin: 16px 24px; padding: 20px; border-radius: 28px; border: 1px solid #e0ecf2; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; color: #5a8faa; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 14px; border-radius: 30px; border: 1px solid #cde3ec; }
+        .hidden { display: none; }
+        canvas { margin: 0 24px 20px; max-height: 260px; }
+        .footer { text-align: center; padding: 16px; font-size: 12px; color: #8aaec0; background: rgba(255,255,255,0.5); }
+        .empty-state { text-align: center; padding: 40px; color: #8aaec0; }
+        @media (max-width: 700px) { .member-grid { padding: 0 16px 16px; } .task-item { flex-direction: column; align-items: flex-start; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="glass-card">
+        <div class="header">
+            <h1>📊 小组作业看板</h1>
+            <p>🌸 任务进度 · 燃尽图 · 一起完成小组作业</p>
+            <div class="stats-row" id="statsPanel">
+                <div class="stat-card"><span class="stat-number" id="totalTasks">0</span>总任务</div>
+                <div class="stat-card"><span class="stat-number" id="completedTasks">0</span>已完成</div>
+                <div class="stat-card"><span class="stat-number" id="progressPercent">0</span>%完成</div>
+                <div class="stat-card"><span class="stat-number" id="memberCount">0</span>成员</div>
+            </div>
+        </div>
+
+        <div class="section-title">👥 成员进度</div>
+        <div class="member-grid" id="memberList"></div>
+
+        <div class="btn-group">
+            <button class="btn" onclick="showAddTask()">➕ 添加任务</button>
+            <button class="btn" onclick="showAddMember()">👤 添加成员</button>
+            <button class="btn btn-outline" onclick="resetProject()">🔄 重置</button>
+        </div>
+
+        <div id="addTaskForm" class="form-modal hidden">
+            <h3 style="margin-bottom:12px">📝 新任务</h3>
+            <div class="form-group"><label>任务名称</label><input type="text" id="taskName" placeholder="例：数据库设计"></div>
+            <div class="form-group"><label>负责人</label><select id="taskAssignee"><option value="">选择成员</option></select></div>
+            <div class="form-group"><label>截止日期</label><input type="date" id="taskDeadline"></div>
+            <button class="btn" onclick="addTask()">✅ 确认</button>
+            <button class="btn btn-outline" onclick="hideAddTask()">取消</button>
+        </div>
+
+        <div id="addMemberForm" class="form-modal hidden">
+            <h3 style="margin-bottom:12px">👤 新成员</h3>
+            <div class="form-group"><label>姓名</label><input type="text" id="memberName" placeholder="例：小羽"></div>
+            <button class="btn" onclick="addMember()">✅ 确认</button>
+            <button class="btn btn-outline" onclick="hideAddMember()">取消</button>
+        </div>
+
+        <div class="section-title">📋 任务清单</div>
+        <div class="task-list" id="taskList"></div>
+
+        <canvas id="burndownChart"></canvas>
+        <div class="footer">🍃 数据自动保存</div>
+    </div>
+</div>
+<script>
+    let project = { members: [], tasks: [] }, chart = null;
+    function load(){let s=localStorage.getItem('group_project_v2');if(s)project=JSON.parse(s);else project={members:['小羽','小晴','小悠'],tasks:[{id:1,name:'需求分析',assignee:'小羽',deadline:'2026-06-05',completed:true},{id:2,name:'数据库设计',assignee:'小晴',deadline:'2026-06-10',completed:false},{id:3,name:'前端开发',assignee:'小悠',deadline:'2026-06-15',completed:false},{id:4,name:'后端开发',assignee:'小羽',deadline:'2026-06-18',completed:false},{id:5,name:'测试文档',assignee:'小晴',deadline:'2026-06-22',completed:false}]};renderAll()}
+    function save(){localStorage.setItem('group_project_v2',JSON.stringify(project));renderAll()}
+    function showAddTask(){document.getElementById('addTaskForm').classList.remove('hidden');let sel=document.getElementById('taskAssignee');sel.innerHTML='<option value="">选择成员</option>';project.members.forEach(m=>sel.innerHTML+=`<option value="${m}">${m}</option>`)}
+    function hideAddTask(){document.getElementById('addTaskForm').classList.add('hidden')}
+    function addTask(){let n=document.getElementById('taskName').value.trim(),a=document.getElementById('taskAssignee').value,d=document.getElementById('taskDeadline').value;if(!n){alert('输入任务名');return}let newId=Math.max(0,...project.tasks.map(t=>t.id),0)+1;project.tasks.push({id:newId,name:n,assignee:a||'未分配',deadline:d||'未设置',completed:false});save();hideAddTask();document.getElementById('taskName').value='';document.getElementById('taskDeadline').value=''}
+    function showAddMember(){document.getElementById('addMemberForm').classList.remove('hidden')}
+    function hideAddMember(){document.getElementById('addMemberForm').classList.add('hidden')}
+    function addMember(){let n=document.getElementById('memberName').value.trim();if(!n){alert('输入姓名');return}if(project.members.includes(n)){alert('已存在');return}project.members.push(n);save();hideAddMember();document.getElementById('memberName').value=''}
+    function toggleTask(id,completed){let t=project.tasks.find(t=>t.id===id);if(t)t.completed=completed;save()}
+    function deleteTask(id){if(confirm('删除任务？')){project.tasks=project.tasks.filter(t=>t.id!==id);save()}}
+    function deleteMember(name){if(confirm(`删除成员 ${name}？`)){project.members=project.members.filter(m=>m!==name);project.tasks.forEach(t=>{if(t.assignee===name)t.assignee='未分配'});save()}}
+    function resetProject(){if(confirm('重置所有数据？')){localStorage.removeItem('group_project_v2');load()}}
+    function renderAll(){renderStats();renderMembers();renderTasks();renderChart()}
+    function renderStats(){let total=project.tasks.length,completed=project.tasks.filter(t=>t.completed).length,percent=total?Math.round(completed/total*100):0;document.getElementById('totalTasks').innerText=total;document.getElementById('completedTasks').innerText=completed;document.getElementById('progressPercent').innerText=percent;document.getElementById('memberCount').innerText=project.members.length}
+    function renderMembers(){let container=document.getElementById('memberList');if(!project.members.length){container.innerHTML='<div class="empty-state">暂无成员～</div>';return}let html='';for(let m of project.members){let tasks=project.tasks.filter(t=>t.assignee===m),total=tasks.length,completed=tasks.filter(t=>t.completed).length,percent=total?Math.round(completed/total*100):0;html+=`<div class="member-card"><div class="member-name">${m}<button onclick="deleteMember('${m}')" style="background:none;border:none;color:#8aaec0;cursor:pointer">🗑</button></div><div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div><div class="member-stats">${completed}/${total} 完成</div></div>`}container.innerHTML=html}
+    function renderTasks(){let container=document.getElementById('taskList');if(!project.tasks.length){container.innerHTML='<div class="empty-state">暂无任务～ 点击添加任务</div>';return}let html='';for(let t of project.tasks){let checked=t.completed?'checked':'';html+=`<div class="task-item"><input type="checkbox" class="task-checkbox" ${checked} onchange="toggleTask(${t.id},this.checked)"><span class="task-name">${t.name}</span><span class="task-assignee">👤 ${t.assignee}</span><span class="task-deadline">📅 ${t.deadline}</span><button class="delete-task" onclick="deleteTask(${t.id})">删除</button></div>`}container.innerHTML=html}
+    function renderChart(){let ctx=document.getElementById('burndownChart').getContext('2d'),total=project.tasks.length,completed=project.tasks.filter(t=>t.completed).length;if(chart)chart.destroy();chart=new Chart(ctx,{type:'line',data:{labels:['开始','第1周','第2周','第3周','第4周','当前'],datasets:[{label:'理想进度',data:[total,total*0.75,total*0.5,total*0.25,0,0],borderColor:'#b8d4e0',borderDash:[5,5],fill:false},{label:'实际完成',data:[0,completed*0.25,completed*0.5,completed*0.75,completed*0.9,completed],borderColor:'#7ab8d4',backgroundColor:'rgba(122,184,212,0.1)',fill:true}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}})}
+    load();
+</script>
+</body>
+</html>

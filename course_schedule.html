@@ -3,584 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智能课表系统 | 课表+周报+作业</title>
+    <title>🍃 我的课表 | 学习小窝</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Microsoft YaHei', 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 20px;
+            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(145deg, #e8f4f8 0%, #d9eef5 100%);
+            min-height: 100vh;
+            padding: 32px 20px;
         }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .card {
-            background: white;
-            border-radius: 20px;
+        .container { max-width: 1300px; margin: 0 auto; }
+
+        /* 玻璃卡片 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 36px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 24px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
         }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+        /* 头部 */
+        .header {
+            background: linear-gradient(120deg, #7ab8d4 0%, #a8d8ea 100%);
+            padding: 28px 32px;
             color: white;
-            padding: 20px 30px;
         }
-        .card-header h1 { font-size: 24px; margin-bottom: 5px; }
-        .card-header p { opacity: 0.9; font-size: 14px; }
-        .stats {
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
+            align-items: center;
+            gap: 10px;
+        }
+        .header p { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+
+        /* 快捷入口 */
+        .nav-grid {
+            display: flex;
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(255,255,255,0.5);
             flex-wrap: wrap;
         }
-        .stat-card {
-            background: rgba(255,255,255,0.2);
+        .nav-btn {
+            background: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #5a8faa;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid rgba(122,184,212,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(90,143,170,0.15);
+            border-color: #7ab8d4;
+        }
+        .nav-btn.primary {
+            background: linear-gradient(120deg, #7ab8d4, #a8d8ea);
+            color: white;
+            border: none;
+        }
+
+        /* 统计行 */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .stat-badge {
+            background: rgba(255,255,255,0.25);
             padding: 6px 18px;
-            border-radius: 30px;
+            border-radius: 40px;
             font-size: 13px;
         }
-        table {
+
+        /* 表格 */
+        .schedule-table {
             width: 100%;
             border-collapse: collapse;
         }
-        th {
-            background: #f8f9fa;
-            padding: 12px 10px;
+        .schedule-table th {
+            padding: 14px 8px;
+            background: rgba(255,255,255,0.6);
             font-weight: 600;
-            border-bottom: 2px solid #e0e0e0;
+            color: #5a7a8a;
+            border-bottom: 1px solid rgba(122,184,212,0.2);
         }
-        td {
-            border: 1px solid #e0e0e0;
+        .schedule-table td {
+            border: 1px solid rgba(122,184,212,0.15);
             padding: 10px 8px;
             vertical-align: top;
             height: 85px;
+            background: rgba(255,255,255,0.4);
         }
-        .time-col {
-            background: #f8f9fa;
+        .time-cell {
+            background: rgba(122,184,212,0.15);
+            font-weight: 500;
+            width: 100px;
+            text-align: center;
+            font-size: 12px;
+            color: #5a7a8a;
+        }
+        .course-block {
+            background: rgba(255,255,255,0.9);
+            border-radius: 16px;
+            padding: 6px 10px;
+            height: 100%;
+            transition: all 0.2s;
+        }
+        .course-block:hover {
+            transform: scale(1.01);
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .course-name {
             font-weight: 600;
-            width: 110px;
+            color: #5a8faa;
+            font-size: 13px;
+        }
+        .course-room {
+            font-size: 11px;
+            color: #8aaec0;
+            margin-top: 4px;
+        }
+        .empty-cell {
+            color: #b8d4e0;
             text-align: center;
             font-size: 12px;
         }
-        .course {
-            background: #e8f0fe;
-            border-radius: 8px;
-            padding: 6px;
-            height: 100%;
-        }
-        .course-name { font-weight: 700; color: #1a73e8; font-size: 13px; }
-        .course-room { font-size: 10px; color: #666; margin-top: 4px; }
-        .empty { color: #ccc; text-align: center; font-size: 12px; }
 
-        .report-content, .homework-content {
-            padding: 25px 30px;
-        }
+        /* 周报区域 */
         .report-section {
-            margin-bottom: 25px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
+            padding: 24px;
+            border-bottom: 1px solid rgba(122,184,212,0.15);
         }
-        .report-section h3 {
-            color: #667eea;
-            margin-bottom: 12px;
+        .section-title {
             font-size: 18px;
-        }
-        .bar-container {
+            font-weight: 600;
+            color: #5a8faa;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            margin: 8px 0;
+            gap: 8px;
         }
-        .bar-label {
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .stat-day {
             width: 50px;
-            font-weight: 600;
+            font-weight: 500;
+            color: #5a7a8a;
         }
-        .bar {
+        .stat-bar {
             flex: 1;
-            height: 24px;
-            background: #e0e0e0;
-            border-radius: 12px;
+            height: 28px;
+            background: rgba(122,184,212,0.2);
+            border-radius: 20px;
             overflow: hidden;
-            margin: 0 10px;
         }
-        .bar-fill {
+        .stat-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 12px;
+            background: linear-gradient(90deg, #7ab8d4, #a8d8ea);
+            border-radius: 20px;
             color: white;
-            line-height: 24px;
-            padding-left: 8px;
+            line-height: 28px;
+            padding-left: 12px;
             font-size: 12px;
         }
         .type-grid {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
         }
-        .type-item {
-            background: #f0f0f0;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-        }
-        .type-item span { font-weight: 700; color: #667eea; }
-        .advice {
-            background: #e8f0fe;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-top: 10px;
-            line-height: 1.8;
-        }
-
-        /* 作业表格样式 */
-        .homework-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .homework-table th {
-            background: #667eea;
-            color: white;
-            padding: 12px;
-            text-align: left;
-        }
-        .homework-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #eee;
-            height: auto;
-        }
-        .homework-row.overdue { background: #ffe0e0; }
-        .homework-row.urgent { background: #fff0e0; }
-        .homework-row.warning { background: #fffbe0; }
-        .status-overdue { color: #e74c3c; font-weight: bold; }
-        .status-urgent { color: #e67e22; font-weight: bold; }
-        .status-warning { color: #f39c12; }
-        .status-normal { color: #27ae60; }
-
-        .delete-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        .delete-btn:hover { background: #c0392b; }
-
-        .urgent-box {
-            background: #fee;
-            border-left: 4px solid #e74c3c;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-        }
-        .urgent-box ul {
-            margin-left: 20px;
-            margin-top: 8px;
-        }
-        .urgent-box li {
-            margin: 5px 0;
-            color: #e74c3c;
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 12px;
-            text-align: center;
-            font-size: 11px;
-            color: #888;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            justify-content: center;
-        }
-        .btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 10px 24px;
+        .type-tag {
+            background: rgba(122,184,212,0.15);
+            padding: 6px 18px;
             border-radius: 30px;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
+            font-size: 13px;
+            color: #5a7a8a;
         }
-        .btn:hover { opacity: 0.9; }
-
-        .add-form {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
+        .advice-box {
+            background: rgba(122,184,212,0.1);
+            border-radius: 20px;
+            padding: 16px 20px;
+            line-height: 1.7;
+            color: #5a7a8a;
         }
-        .add-form h3 { margin-bottom: 15px; color: #333; }
-        .add-form input, .add-form button {
-            padding: 10px;
-            margin-right: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: #8aaec0;
+            background: rgba(255,255,255,0.4);
         }
-        .add-form input {
-            width: 200px;
-        }
-        .add-form button {
-            background: #27ae60;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .course-name { font-size: 10px; }
-            .time-col { width: 70px; font-size: 9px; }
-            td { padding: 4px; height: 65px; }
-            .report-content, .homework-content { padding: 15px; }
-            .add-form input { width: 100%; margin-bottom: 10px; }
+        @media (max-width: 700px) {
+            .course-name { font-size: 11px; }
+            .time-cell { width: 70px; font-size: 10px; }
+            td { padding: 6px; height: 70px; }
+            .header { padding: 20px 24px; }
+            .nav-grid { padding: 14px 18px; }
+            .report-section { padding: 18px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- 课表部分 -->
-    <div class="card">
-        <div class="card-header">
-            <h1>📚 我的课程表</h1>
-            <p>智能解析 · 一键生成</p>
-            <div class="stats">
-                <div class="stat-card">📖 总课程 <strong>18</strong> 门</div>
-                <div class="stat-card">周一 <strong>6</strong> 节</div>
-                <div class="stat-card">周二 <strong>8</strong> 节</div>
-                <div class="stat-card">周三 <strong>6</strong> 节</div>
-                <div class="stat-card">周四 <strong>8</strong> 节</div>
-                <div class="stat-card">周五 <strong>8</strong> 节</div>
+    <div class="glass-card">
+        <div class="header">
+            <h1>📚 我的课表 · 学习小窝</h1>
+            <p>🌸 记录每一节课的成长时光</p>
+            <div class="stats-row">
+                <div class="stat-badge">📖 总课 18 门</div>
+                <div class="stat-badge">周一 6节</div>
+                <div class="stat-badge">周二 8节</div>
+                <div class="stat-badge">周三 6节</div>
+                <div class="stat-badge">周四 8节</div>
+                <div class="stat-badge">周五 8节</div>
             </div>
         </div>
-        <table>
-            <thead>
-                <tr><th></th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr>
-            </thead>
-            <tbody>
-<tr><td class="time-col">08:00-09:40<br><span style="font-size:9px">第1-2节</span></td><td><div class="course">
-                    <div class="course-name">计算机网络</div>
-                    <div class="course-room">📍 n113</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">计算机组成原理</div>
-                    <div class="course-room">📍 n217</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">Java语言程序设计</div>
-                    <div class="course-room">📍 n213</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">Java语言程序设计</div>
-                    <div class="course-room">📍 n213</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">Python程序设计</div>
-                    <div class="course-room">📍 n113</div>
-                </div></td></tr>
-<tr><td class="time-col">09:50-11:30<br><span style="font-size:9px">第3-4节</span></td><td><div class="course">
-                    <div class="course-name">人工智能</div>
-                    <div class="course-room">📍 n522</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">数据库原理</div>
-                    <div class="course-room">📍 n213</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">机器学习</div>
-                    <div class="course-room">📍 n323</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">数据库原理</div>
-                    <div class="course-room">📍 n213</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">毛泽东思想和中国特色社会主义</div>
-                    <div class="course-room">📍 n111</div>
-                </div></td></tr>
-<tr><td class="time-col">13:30-15:10<br><span style="font-size:9px">第5-6节</span></td><td><div class="course">
-                    <div class="course-name">五彩缤纷的现代多媒体生活（通核）</div>
-                    <div class="course-room">📍 8302</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">社会调查方法（混合课堂）</div>
-                    <div class="course-room">📍 7307</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">形势与政策（4）</div>
-                    <div class="course-room">📍 n215</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">计算机网络</div>
-                    <div class="course-room">📍 n217</div>
-                </div></td><td><div class="course">
-                    <div class="course-name">传播心理学</div>
-                    <div class="course-room">📍 8214</div>
-                </div></td></tr>
-<tr><td class="time-col">15:20-17:00<br><span style="font-size:9px">第7-8节</span></td><td><div class="empty">—</div></td><td><div class="course">
-                    <div class="course-name">毛泽东思想和中国特色社会主义</div>
-                    <div class="course-room">📍 n111</div>
-                </div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="course">
-                    <div class="course-name">大学体育4</div>
-                    <div class="course-room">📍 舞二</div>
-                </div></td></tr>
-<tr><td class="time-col">18:30-20:10<br><span style="font-size:9px">第9-10节</span></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td></tr>
-<tr><td class="time-col">20:20-22:00<br><span style="font-size:9px">第11-12节</span></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="empty">—</div></td><td><div class="course">
-                    <div class="course-name">计算机组成原理</div>
-                    <div class="course-room">📍 n112</div>
-                </div></td><td><div class="empty">—</div></td></tr>
 
+        <div class="nav-grid">
+            <a href="study_buddy.html" class="nav-btn primary">👥 找学习搭子</a>
+            <a href="group_project.html" class="nav-btn">📊 小组作业看板</a>
+        </div>
+
+        <table class="schedule-table">
+            <thead><tr><th></th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead>
+            <tbody><tr><td class="time-cell">08:00-09:40<br><span style="font-size:9px">第1-2节</span></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">📍 n113</div></div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">📍 n217</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">Python程序设计</div><div class="course-room">📍 n113</div></div></td></tr><tr><td class="time-cell">09:50-11:30<br><span style="font-size:9px">第3-4节</span></td><td><div class="course-block"><div class="course-name">人工智能</div><div class="course-room">📍 n522</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">机器学习</div><div class="course-room">📍 n323</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">📍 n111</div></div></td></tr><tr><td class="time-cell">13:30-15:10<br><span style="font-size:9px">第5-6节</span></td><td><div class="course-block"><div class="course-name">五彩缤纷的现代多媒体生活（通核）</div><div class="course-room">📍 8302</div></div></td><td><div class="course-block"><div class="course-name">社会调查方法（混合课堂）</div><div class="course-room">📍 7307</div></div></td><td><div class="course-block"><div class="course-name">形势与政策（4）</div><div class="course-room">📍 n215</div></div></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">📍 n217</div></div></td><td><div class="course-block"><div class="course-name">传播心理学</div><div class="course-room">📍 8214</div></div></td></tr><tr><td class="time-cell">15:20-17:00<br><span style="font-size:9px">第7-8节</span></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">📍 n111</div></div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">大学体育4</div><div class="course-room">📍 舞二</div></div></td></tr><tr><td class="time-cell">18:30-20:10<br><span style="font-size:9px">第9-10节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td></tr><tr><td class="time-cell">20:20-22:00<br><span style="font-size:9px">第11-12节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">📍 n112</div></div></td><td><div class="empty-cell">—</div></td></tr>
             </tbody>
         </table>
     </div>
 
-    <!-- 周报部分 -->
-    <div class="card">
-        <div class="card-header">
-            <h1>📊 学业周报</h1>
-            <p>本周学习数据统计与分析</p>
+    <div class="glass-card">
+        <div class="header" style="background: linear-gradient(120deg, #92c8e0, #b8dfeb);">
+            <h1>📖 学业周报</h1>
+            <p>✨ 本周学习小总结</p>
         </div>
-        <div class="report-content">
-            <div class="report-section">
-                <h3>📖 课时统计</h3>
-                <div class="bar-container">
-                    <div class="bar-label">总课时</div>
-                    <div class="bar"><div class="bar-fill" style="width: 100%">36 节</div></div>
-                </div>
-                <div class="bar-container">
-                    <div class="bar-label">总时长</div>
-                    <div class="bar"><div class="bar-fill" style="width: 90.0%">27.0 小时</div></div>
-                </div>
+        <div class="report-section">
+            <div class="section-title">⏱ 课时统计</div>
+            <div class="stat-row"><span class="stat-day">总课时</span><div class="stat-bar"><div class="stat-fill" style="width:100%">36节</div></div></div>
+            <div class="stat-row"><span class="stat-day">总时长</span><div class="stat-bar"><div class="stat-fill" style="width:90.0%">27.0小时</div></div></div>
+        </div>
+        <div class="report-section">
+            <div class="section-title">📅 每日负荷</div>
+            
+            <div class="stat-row">
+                <span class="stat-day">周一</span>
+                <div class="stat-bar"><div class="stat-fill" style="width: 75.0%">6节</div></div>
             </div>
-
-            <div class="report-section">
-                <h3>📅 每日负荷</h3>
-                
-            <div class="bar-container">
-                <div class="bar-label">周一</div>
-                <div class="bar"><div class="bar-fill" style="width: 75.0%">6节</div></div>
+            <div class="stat-row">
+                <span class="stat-day">周二</span>
+                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
             </div>
-            <div class="bar-container">
-                <div class="bar-label">周二</div>
-                <div class="bar"><div class="bar-fill" style="width: 100.0%">8节</div></div>
+            <div class="stat-row">
+                <span class="stat-day">周三</span>
+                <div class="stat-bar"><div class="stat-fill" style="width: 75.0%">6节</div></div>
             </div>
-            <div class="bar-container">
-                <div class="bar-label">周三</div>
-                <div class="bar"><div class="bar-fill" style="width: 75.0%">6节</div></div>
+            <div class="stat-row">
+                <span class="stat-day">周四</span>
+                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
             </div>
-            <div class="bar-container">
-                <div class="bar-label">周四</div>
-                <div class="bar"><div class="bar-fill" style="width: 100.0%">8节</div></div>
+            <div class="stat-row">
+                <span class="stat-day">周五</span>
+                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
             </div>
-            <div class="bar-container">
-                <div class="bar-label">周五</div>
-                <div class="bar"><div class="bar-fill" style="width: 100.0%">8节</div></div>
-            </div>
-                <div style="margin-top: 15px;">
-                    🔥 最忙的一天：周二（8节）<br>
-                    😴 最轻松的一天：周一（6节）
-                </div>
-            </div>
-
-            <div class="report-section">
-                <h3>📚 课程类型分布</h3>
-                <div class="type-grid">
-                    <div class="type-item">💻 专业核心课 <span>12</span> 门</div>
-                    <div class="type-item">🏃 体育课 <span>1</span> 门</div>
-                    <div class="type-item">🎨 通识选修课 <span>2</span> 门</div>
-                    <div class="type-item">📜 思政课 <span>3</span> 门</div>
-                </div>
-            </div>
-
-            <div class="report-section">
-                <h3>💡 学习建议</h3>
-                <div class="advice">⚠️ 本周课程较多，注意劳逸结合<br></div>
+            <div style="margin-top:12px">🔥 最忙: 周二 · 😴 最轻松: 周一</div>
+        </div>
+        <div class="report-section">
+            <div class="section-title">📚 课程类型</div>
+            <div class="type-grid">
+                <div class="type-tag">💻 专业核心 12门</div>
+                <div class="type-tag">🏃 体育 1门</div>
+                <div class="type-tag">🎨 通识选修 2门</div>
+                <div class="type-tag">📜 思政 3门</div>
             </div>
         </div>
-    </div>
-
-    <!-- 作业倒计时部分 -->
-    <div class="card">
-        <div class="card-header">
-            <h1>📝 作业倒计时</h1>
-            <p>DDL提醒 · 拒绝拖延</p>
+        <div class="report-section">
+            <div class="section-title">💡 学习小建议</div>
+            <div class="advice-box">📚 本周课程较多，注意劳逸结合</div>
         </div>
-        <div class="homework-content">
-            <div class="urgent-box">
-                <strong>⚠️ 紧急提醒</strong>
-                <ul id="urgentList">
-                    <li>📭 暂无作业，添加后会自动显示倒计时</li>
-                </ul>
-            </div>
-
-            <h3 style="margin-bottom: 15px; color: #333;">📋 作业列表</h3>
-            <table class="homework-table" id="homeworkTable">
-                <thead>
-                    <tr>
-                        <th>作业名称</th>
-                        <th>所属课程</th>
-                        <th>截止日期</th>
-                        <th>状态</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody id="homeworkBody">
-                    <tr><td colspan="5" style="text-align:center; color:#999;">暂无作业，下方添加吧～</td></tr>
-                </tbody>
-            </table>
-
-            <!-- 添加作业表单 -->
-            <div class="add-form">
-                <h3>➕ 添加新作业</h3>
-                <input type="text" id="newName" placeholder="作业名称" style="width: 200px;">
-                <input type="text" id="newCourse" placeholder="所属课程（可选）" style="width: 150px;">
-                <input type="date" id="newDue" style="width: 150px;">
-                <button id="addBtn">添加作业</button>
-                <span id="addMsg" style="margin-left: 10px; color: green;"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        📝 报告生成时间：2026-05-30 15:36:07
+        <div class="footer">🍃 生成时间 2026-05-31 14:10</div>
     </div>
 </div>
-
-<script>
-    // 作业数据（从后端注入）
-    let homeworkData = [];
-
-    // 更新显示作业列表
-    function updateHomeworkDisplay() {
-        const tbody = document.getElementById('homeworkBody');
-        const urgentList = document.getElementById('urgentList');
-
-        if (!homeworkData || homeworkData.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999;">暂无作业，上方添加吧～</td></tr>';
-            urgentList.innerHTML = '<li>📭 暂无作业，添加后会自动显示倒计时</li>';
-            return;
-        }
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        let urgentItems = [];
-        let rows = '';
-
-        for (let i = 0; i < homeworkData.length; i++) {
-            const hw = homeworkData[i];
-            const dueDate = new Date(hw.due);
-            dueDate.setHours(0, 0, 0, 0);
-            const daysLeft = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
-
-            let status = '';
-            let statusClass = '';
-
-            if (daysLeft < 0) {
-                status = `<span class="status-overdue">⏰ 已过期${-daysLeft}天</span>`;
-                statusClass = 'overdue';
-            } else if (daysLeft === 0) {
-                status = '<span class="status-urgent">🔥 今天截止！</span>';
-                statusClass = 'urgent';
-                urgentItems.push(`🔥 ${hw.name} 今天截止！`);
-            } else if (daysLeft <= 3) {
-                status = `<span class="status-warning">⚠️ 还剩${daysLeft}天</span>`;
-                statusClass = 'warning';
-                urgentItems.push(`⚠️ ${hw.name} 还剩 ${daysLeft} 天`);
-            } else {
-                status = `<span class="status-normal">📅 还剩${daysLeft}天</span>`;
-                statusClass = 'normal';
-            }
-
-            rows += `
-                <tr class="homework-row ${statusClass}" data-index="${i}">
-                    <td>${hw.name}</td>
-                    <td>${hw.course || '未分类'}</td>
-                    <td>${hw.due}</td>
-                    <td>${status}</td>
-                    <td><button class="delete-btn" data-index="${i}">删除</button></td>
-                </tr>
-            `;
-        }
-
-        tbody.innerHTML = rows;
-
-        if (urgentItems.length === 0) {
-            urgentList.innerHTML = '<li>✅ 太棒了！没有即将截止的作业</li>';
-        } else {
-            urgentList.innerHTML = urgentItems.map(item => `<li>${item}</li>`).join('');
-        }
-
-        // 绑定删除按钮事件
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const idx = parseInt(this.dataset.index);
-                if (confirm('确定要删除这个作业吗？')) {
-                    homeworkData.splice(idx, 1);
-                    saveHomeworkToServer();
-                }
-            });
-        });
-    }
-
-    // 保存作业到服务器（通过后端API）
-    function saveHomeworkToServer() {
-        fetch('/save_homework', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(homeworkData)
-        }).then(() => {
-            updateHomeworkDisplay();
-        }).catch(() => {
-            // 如果fetch失败，尝试表单提交方式
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '/save_homework';
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'data';
-            input.value = JSON.stringify(homeworkData);
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        });
-    }
-
-    // 添加作业
-    document.getElementById('addBtn').addEventListener('click', function() {
-        const name = document.getElementById('newName').value.trim();
-        const course = document.getElementById('newCourse').value.trim();
-        const due = document.getElementById('newDue').value;
-
-        if (!name) {
-            alert('请填写作业名称');
-            return;
-        }
-        if (!due) {
-            alert('请填写截止日期');
-            return;
-        }
-
-        // 添加到本地数据
-        homeworkData.push({
-            name: name,
-            course: course || '未分类',
-            due: due,
-            created: new Date().toISOString()
-        });
-
-        // 保存并刷新显示
-        saveHomeworkToServer();
-
-        // 清空表单
-        document.getElementById('newName').value = '';
-        document.getElementById('newCourse').value = '';
-        document.getElementById('newDue').value = '';
-
-        const msg = document.getElementById('addMsg');
-        msg.textContent = '✅ 添加成功！';
-        setTimeout(() => { msg.textContent = ''; }, 2000);
-    });
-
-    // 初始化显示
-    updateHomeworkDisplay();
-</script>
 </body>
 </html>
