@@ -3,161 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍃 我的课表 | 学习小窝</title>
+    <title>我的课表</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            background: linear-gradient(145deg, #e8f4f8 0%, #d9eef5 100%);
-            min-height: 100vh;
+            background: #f0f4f8;
             padding: 32px 20px;
+            min-height: 100vh;
+            color: #1a202c;
         }
-        .container { max-width: 1300px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
 
-        /* 玻璃卡片 */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 36px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05), 0 2px 8px rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            margin-bottom: 24px;
+        /* 卡片 - 干净有层次 */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid #e8ecf0;
             overflow: hidden;
+            margin-bottom: 24px;
         }
 
         /* 头部 */
         .header {
-            background: linear-gradient(120deg, #7ab8d4 0%, #a8d8ea 100%);
-            padding: 28px 32px;
-            color: white;
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid #e8ecf0;
+            background: #fafbfc;
         }
         .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            color: #1a202c;
         }
-        .header p { opacity: 0.85; margin-top: 6px; font-size: 14px; }
+        .header h1 span { color: #2b6cb0; }
+        .header p {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 4px;
+        }
 
-        /* 快捷入口 */
-        .nav-grid {
+        /* 统计卡片 - 突出数字 */
+        .stats {
             display: flex;
             gap: 16px;
-            padding: 20px 24px;
-            background: rgba(255,255,255,0.5);
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: white;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #4a5568;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .stat-item strong {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+            margin-right: 2px;
+        }
+        .stat-item .highlight { color: #2b6cb0; }
+
+        /* 导航按钮 */
+        .nav-grid {
+            display: flex;
+            gap: 12px;
+            padding: 16px 32px;
+            background: #fafbfc;
+            border-bottom: 1px solid #e8ecf0;
             flex-wrap: wrap;
         }
         .nav-btn {
             background: white;
-            padding: 10px 24px;
-            border-radius: 50px;
+            padding: 8px 22px;
+            border-radius: 40px;
             text-decoration: none;
-            color: #5a8faa;
+            color: #4a5568;
+            font-size: 13px;
             font-weight: 500;
-            font-size: 14px;
             transition: all 0.2s;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-            border: 1px solid rgba(122,184,212,0.3);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         .nav-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(90,143,170,0.15);
-            border-color: #7ab8d4;
+            border-color: #2b6cb0;
+            color: #2b6cb0;
+            box-shadow: 0 4px 12px rgba(43,108,176,0.08);
         }
         .nav-btn.primary {
-            background: linear-gradient(120deg, #7ab8d4, #a8d8ea);
+            background: #2b6cb0;
             color: white;
             border: none;
         }
-
-        /* 统计行 */
-        .stats-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-        .stat-badge {
-            background: rgba(255,255,255,0.25);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-size: 13px;
+        .nav-btn.primary:hover {
+            background: #1a4f7a;
+            box-shadow: 0 4px 16px rgba(43,108,176,0.25);
         }
 
-        /* 表格 */
+        /* ========== 课表表格 ========== */
         .schedule-table {
             width: 100%;
             border-collapse: collapse;
         }
         .schedule-table th {
             padding: 14px 8px;
-            background: rgba(255,255,255,0.6);
+            background: #f7fafc;
             font-weight: 600;
-            color: #5a7a8a;
-            border-bottom: 1px solid rgba(122,184,212,0.2);
+            color: #2d3748;
+            border-bottom: 2px solid #e8ecf0;
+            font-size: 13px;
         }
         .schedule-table td {
-            border: 1px solid rgba(122,184,212,0.15);
+            border: 1px solid #e8ecf0;
             padding: 10px 8px;
             vertical-align: top;
-            height: 85px;
-            background: rgba(255,255,255,0.4);
+            height: 82px;
+            background: white;
         }
         .time-cell {
-            background: rgba(122,184,212,0.15);
+            background: #f7fafc;
             font-weight: 500;
             width: 100px;
             text-align: center;
             font-size: 12px;
-            color: #5a7a8a;
+            color: #4a5568;
+            border-right: 2px solid #e8ecf0;
         }
         .course-block {
-            background: rgba(255,255,255,0.9);
-            border-radius: 16px;
+            background: #ebf5ff;
+            border-radius: 14px;
             padding: 6px 10px;
             height: 100%;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            border-left: 4px solid #2b6cb0;
         }
         .course-block:hover {
+            background: #dbeafe;
             transform: scale(1.01);
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .course-name {
             font-weight: 600;
-            color: #5a8faa;
+            color: #1a202c;
             font-size: 13px;
         }
         .course-room {
             font-size: 11px;
-            color: #8aaec0;
+            color: #718096;
             margin-top: 4px;
         }
         .empty-cell {
-            color: #b8d4e0;
+            color: #cbd5e0;
             text-align: center;
             font-size: 12px;
         }
 
-        /* 周报区域 */
+        /* ========== 周报区域 ========== */
         .report-section {
-            padding: 24px;
-            border-bottom: 1px solid rgba(122,184,212,0.15);
+            padding: 24px 32px;
+            border-bottom: 1px solid #e8ecf0;
         }
+        .report-section:last-child { border-bottom: none; }
         .section-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
-            color: #5a8faa;
+            color: #1a202c;
             margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
+
         .stat-row {
             display: flex;
             align-items: center;
@@ -166,137 +182,186 @@
         .stat-day {
             width: 50px;
             font-weight: 500;
-            color: #5a7a8a;
+            color: #4a5568;
+            font-size: 13px;
         }
         .stat-bar {
             flex: 1;
-            height: 28px;
-            background: rgba(122,184,212,0.2);
+            height: 24px;
+            background: #edf2f7;
             border-radius: 20px;
             overflow: hidden;
         }
         .stat-fill {
             height: 100%;
-            background: linear-gradient(90deg, #7ab8d4, #a8d8ea);
+            background: #2b6cb0;
             border-radius: 20px;
             color: white;
-            line-height: 28px;
+            line-height: 24px;
             padding-left: 12px;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 500;
         }
+
         .type-grid {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
         }
         .type-tag {
-            background: rgba(122,184,212,0.15);
+            background: #edf2f7;
             padding: 6px 18px;
             border-radius: 30px;
             font-size: 13px;
-            color: #5a7a8a;
+            color: #4a5568;
+            font-weight: 500;
         }
+        .type-tag .num {
+            font-weight: 700;
+            color: #2b6cb0;
+            margin-right: 2px;
+        }
+
         .advice-box {
-            background: rgba(122,184,212,0.1);
-            border-radius: 20px;
-            padding: 16px 20px;
-            line-height: 1.7;
-            color: #5a7a8a;
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 14px 18px;
+            line-height: 1.8;
+            color: #4a5568;
+            font-size: 13px;
+            border: 1px solid #e8ecf0;
         }
+        .advice-box .item {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
         .footer {
             text-align: center;
-            padding: 16px;
+            padding: 14px;
             font-size: 11px;
-            color: #8aaec0;
-            background: rgba(255,255,255,0.4);
+            color: #a0aec0;
+            border-top: 1px solid #e8ecf0;
+            background: #fafbfc;
         }
+
+        /* ========== 响应式 ========== */
         @media (max-width: 700px) {
+            .header { padding: 20px 20px 16px; }
+            .header h1 { font-size: 20px; }
+            .nav-grid { padding: 12px 16px; }
+            .report-section { padding: 16px 20px; }
             .course-name { font-size: 11px; }
             .time-cell { width: 70px; font-size: 10px; }
             td { padding: 6px; height: 70px; }
-            .header { padding: 20px 24px; }
-            .nav-grid { padding: 14px 18px; }
-            .report-section { padding: 18px; }
+            .stats { gap: 10px; }
+            .stat-item { font-size: 12px; padding: 4px 12px; }
+            .stat-item strong { font-size: 14px; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="glass-card">
+    <div class="card">
         <div class="header">
-            <h1>📚 我的课表 · 学习小窝</h1>
-            <p>🌸 记录每一节课的成长时光</p>
-            <div class="stats-row">
-                <div class="stat-badge">📖 总课 18 门</div>
-                <div class="stat-badge">周一 6节</div>
-                <div class="stat-badge">周二 8节</div>
-                <div class="stat-badge">周三 6节</div>
-                <div class="stat-badge">周四 8节</div>
-                <div class="stat-badge">周五 8节</div>
+            <h1> 我的课表</h1>
+            <p>课程安排 · 学业周报</p>
+            <div class="stats">
+                <div class="stat-item">📖 总课 <strong>18</strong> 门</div>
+                <div class="stat-item">周一 <strong>6</strong> 节</div>
+                <div class="stat-item">周二 <strong>8</strong> 节</div>
+                <div class="stat-item">周三 <strong>6</strong> 节</div>
+                <div class="stat-item">周四 <strong>8</strong> 节</div>
+                <div class="stat-item">周五 <strong>8</strong> 节</div>
             </div>
         </div>
 
         <div class="nav-grid">
-            <a href="study_buddy.html" class="nav-btn primary">👥 找学习搭子</a>
-            <a href="group_project.html" class="nav-btn">📊 小组作业看板</a>
+            <a href="study_buddy.html" class="nav-btn primary"> 找学习搭子</a>
+            <a href="group_project.html" class="nav-btn"> 小组作业看板</a>
         </div>
 
         <table class="schedule-table">
-            <thead><tr><th></th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr></thead>
-            <tbody><tr><td class="time-cell">08:00-09:40<br><span style="font-size:9px">第1-2节</span></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">📍 n113</div></div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">📍 n217</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">Python程序设计</div><div class="course-room">📍 n113</div></div></td></tr><tr><td class="time-cell">09:50-11:30<br><span style="font-size:9px">第3-4节</span></td><td><div class="course-block"><div class="course-name">人工智能</div><div class="course-room">📍 n522</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">机器学习</div><div class="course-room">📍 n323</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">📍 n213</div></div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">📍 n111</div></div></td></tr><tr><td class="time-cell">13:30-15:10<br><span style="font-size:9px">第5-6节</span></td><td><div class="course-block"><div class="course-name">五彩缤纷的现代多媒体生活（通核）</div><div class="course-room">📍 8302</div></div></td><td><div class="course-block"><div class="course-name">社会调查方法（混合课堂）</div><div class="course-room">📍 7307</div></div></td><td><div class="course-block"><div class="course-name">形势与政策（4）</div><div class="course-room">📍 n215</div></div></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">📍 n217</div></div></td><td><div class="course-block"><div class="course-name">传播心理学</div><div class="course-room">📍 8214</div></div></td></tr><tr><td class="time-cell">15:20-17:00<br><span style="font-size:9px">第7-8节</span></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">📍 n111</div></div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">大学体育4</div><div class="course-room">📍 舞二</div></div></td></tr><tr><td class="time-cell">18:30-20:10<br><span style="font-size:9px">第9-10节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td></tr><tr><td class="time-cell">20:20-22:00<br><span style="font-size:9px">第11-12节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">📍 n112</div></div></td><td><div class="empty-cell">—</div></td></tr>
+            <thead>
+                <tr><th></th><th>周一</th><th>周二</th><th>周三</th><th>周四</th><th>周五</th></tr>
+            </thead>
+            <tbody><tr><td class="time-cell">08:00-09:40<br><span style="font-size:9px">第1-2节</span></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">n113</div></div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">n217</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">n213</div></div></td><td><div class="course-block"><div class="course-name">Java语言程序设计</div><div class="course-room">n213</div></div></td><td><div class="course-block"><div class="course-name">Python程序设计</div><div class="course-room">n113</div></div></td></tr><tr><td class="time-cell">09:50-11:30<br><span style="font-size:9px">第3-4节</span></td><td><div class="course-block"><div class="course-name">人工智能</div><div class="course-room">n522</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">n213</div></div></td><td><div class="course-block"><div class="course-name">机器学习</div><div class="course-room">n323</div></div></td><td><div class="course-block"><div class="course-name">数据库原理</div><div class="course-room">n213</div></div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">n111</div></div></td></tr><tr><td class="time-cell">13:30-15:10<br><span style="font-size:9px">第5-6节</span></td><td><div class="course-block"><div class="course-name">五彩缤纷的现代多媒体生活（通核）</div><div class="course-room">8302</div></div></td><td><div class="course-block"><div class="course-name">社会调查方法（混合课堂）</div><div class="course-room">7307</div></div></td><td><div class="course-block"><div class="course-name">形势与政策（4）</div><div class="course-room">n215</div></div></td><td><div class="course-block"><div class="course-name">计算机网络</div><div class="course-room">n217</div></div></td><td><div class="course-block"><div class="course-name">传播心理学</div><div class="course-room">8214</div></div></td></tr><tr><td class="time-cell">15:20-17:00<br><span style="font-size:9px">第7-8节</span></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">毛泽东思想和中国特色社会主义</div><div class="course-room">n111</div></div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">大学体育4</div><div class="course-room">舞二</div></div></td></tr><tr><td class="time-cell">18:30-20:10<br><span style="font-size:9px">第9-10节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td></tr><tr><td class="time-cell">20:20-22:00<br><span style="font-size:9px">第11-12节</span></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="empty-cell">—</div></td><td><div class="course-block"><div class="course-name">计算机组成原理</div><div class="course-room">n112</div></div></td><td><div class="empty-cell">—</div></td></tr>
             </tbody>
         </table>
     </div>
 
-    <div class="glass-card">
-        <div class="header" style="background: linear-gradient(120deg, #92c8e0, #b8dfeb);">
-            <h1>📖 学业周报</h1>
-            <p>✨ 本周学习小总结</p>
+    <!-- 周报 -->
+    <div class="card">
+        <div class="header" style="border-bottom: none; padding-bottom: 0;">
+            <h1> 学业周报</h1>
+            <p>本周学习数据一览</p>
         </div>
+
         <div class="report-section">
             <div class="section-title">⏱ 课时统计</div>
-            <div class="stat-row"><span class="stat-day">总课时</span><div class="stat-bar"><div class="stat-fill" style="width:100%">36节</div></div></div>
-            <div class="stat-row"><span class="stat-day">总时长</span><div class="stat-bar"><div class="stat-fill" style="width:90.0%">27.0小时</div></div></div>
+            <div class="stat-row">
+                <span class="stat-day">总课时</span>
+                <div class="stat-bar"><div class="stat-fill" style="width:100%">36节</div></div>
+            </div>
+            <div class="stat-row">
+                <span class="stat-day">总时长</span>
+                <div class="stat-bar"><div class="stat-fill" style="width:90.0%">27.0小时</div></div>
+            </div>
         </div>
+
         <div class="report-section">
             <div class="section-title">📅 每日负荷</div>
             
             <div class="stat-row">
                 <span class="stat-day">周一</span>
-                <div class="stat-bar"><div class="stat-fill" style="width: 75.0%">6节</div></div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 75.0%">6节</div>
+                </div>
             </div>
             <div class="stat-row">
                 <span class="stat-day">周二</span>
-                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 100.0%">8节</div>
+                </div>
             </div>
             <div class="stat-row">
                 <span class="stat-day">周三</span>
-                <div class="stat-bar"><div class="stat-fill" style="width: 75.0%">6节</div></div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 75.0%">6节</div>
+                </div>
             </div>
             <div class="stat-row">
                 <span class="stat-day">周四</span>
-                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 100.0%">8节</div>
+                </div>
             </div>
             <div class="stat-row">
                 <span class="stat-day">周五</span>
-                <div class="stat-bar"><div class="stat-fill" style="width: 100.0%">8节</div></div>
+                <div class="stat-bar">
+                    <div class="stat-fill" style="width: 100.0%">8节</div>
+                </div>
             </div>
-            <div style="margin-top:12px">🔥 最忙: 周二 · 😴 最轻松: 周一</div>
+            <div style="margin-top:12px; font-size:13px; color:#4a5568;">
+            </div>
         </div>
+
         <div class="report-section">
-            <div class="section-title">📚 课程类型</div>
+            <div class="section-title"> 课程类型</div>
             <div class="type-grid">
-                <div class="type-tag">💻 专业核心 12门</div>
-                <div class="type-tag">🏃 体育 1门</div>
-                <div class="type-tag">🎨 通识选修 2门</div>
-                <div class="type-tag">📜 思政 3门</div>
+                <div class="type-tag"> 专业核心 <span class="num">12</span> 门</div>
+                <div class="type-tag"> 体育 <span class="num">1</span> 门</div>
+                <div class="type-tag"> 通识选修 <span class="num">2</span> 门</div>
+                <div class="type-tag"> 思政 <span class="num">3</span> 门</div>
             </div>
         </div>
+
         <div class="report-section">
-            <div class="section-title">💡 学习小建议</div>
-            <div class="advice-box">📚 本周课程较多，注意劳逸结合</div>
+            <div class="section-title">💡 学习建议</div>
+            <div class="advice-box">本周课程较多，注意劳逸结合</div>
         </div>
-        <div class="footer">🍃 生成时间 2026-05-31 14:10</div>
+
+        <div class="footer">生成时间 2026-06-17 10:03</div>
     </div>
 </div>
 </body>

@@ -2,138 +2,828 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>👭 学习搭子匹配器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习搭子匹配器</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: linear-gradient(145deg, #e8f4f8 0%, #d9eef5 100%);
+            font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: #f0f4f8;
             padding: 32px 20px;
             min-height: 100vh;
+            color: #1a202c;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .glass-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 36px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
-            border: 1px solid rgba(255,255,255,0.5);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(120deg, #7ab8d4, #a8d8ea);
-            padding: 28px 32px;
-            color: white;
-        }
-        .header h1 { font-size: 28px; display: flex; align-items: center; gap: 10px; }
-        .stats { display: flex; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
-        .stat-badge { background: rgba(255,255,255,0.25); padding: 6px 18px; border-radius: 40px; font-size: 13px; }
+        .container { max-width: 1100px; margin: 0 auto; }
 
-        .tabs { display: flex; gap: 8px; padding: 16px 24px; background: rgba(255,255,255,0.5); flex-wrap: wrap; }
-        .tab { padding: 8px 20px; border-radius: 40px; cursor: pointer; font-size: 14px; color: #5a8faa; transition: 0.2s; }
-        .tab.active { background: #7ab8d4; color: white; }
-        .tab-content { display: none; padding: 24px; }
+        /* 卡片 - 加一点阴影提升层次 */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            border: 1px solid #e8ecf0;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        /* 头部 - 用深色强调 */
+        .header {
+            padding: 28px 32px 20px;
+            border-bottom: 1px solid #e8ecf0;
+            background: #fafbfc;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            color: #1a202c;
+        }
+        .header h1 span { color: #2b6cb0; }
+        .header p {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 4px;
+        }
+
+        /* 统计 - 用卡片式突出 */
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            background: white;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 13px;
+            color: #4a5568;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .stat-item strong {
+            font-weight: 700;
+            color: #1a202c;
+            font-size: 16px;
+            margin-right: 2px;
+        }
+        .stat-item .highlight { color: #2b6cb0; }
+        .stat-item .highlight-green { color: #2d7a6e; }
+
+        /* Tab导航 */
+        .tabs {
+            display: flex;
+            gap: 2px;
+            padding: 16px 32px 0;
+            background: #fafbfc;
+            border-bottom: 1px solid #e8ecf0;
+        }
+        .tab {
+            padding: 8px 22px;
+            border-radius: 20px 20px 0 0;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: #718096;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .tab:hover { color: #2b6cb0; }
+        .tab.active {
+            color: #2b6cb0;
+            border-bottom-color: #2b6cb0;
+            background: white;
+            font-weight: 600;
+        }
+        .tab-content { display: none; padding: 24px 32px 32px; }
         .tab-content.active { display: block; }
 
+        /* 同学卡片 - 加强视觉层次 */
         .student-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 20px;
             margin-bottom: 20px;
-            border: 1px solid rgba(122,184,212,0.3);
+            border: 1px solid #e8ecf0;
             overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .student-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
         }
         .student-header {
-            background: #f0f8fc;
             padding: 14px 20px;
             display: flex;
             justify-content: space-between;
-            font-weight: 600;
-            color: #5a7a8a;
+            align-items: center;
+            background: #f7fafc;
+            border-bottom: 1px solid #e8ecf0;
         }
-        .delete-btn { background: #e0ecf2; border: none; padding: 4px 14px; border-radius: 30px; cursor: pointer; }
+        .student-name {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 16px;
+        }
+        .student-name .badge {
+            background: #2b6cb0;
+            color: white;
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 10px;
+            border-radius: 30px;
+            margin-left: 10px;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 16px;
+            transition: 0.2s;
+        }
+        .delete-btn:hover {
+            background: #fed7d7;
+            color: #e53e3e;
+        }
 
-        .match-section { padding: 18px 22px; border-bottom: 1px solid #e0ecf2; }
-        .match-title { font-weight: 600; color: #5a8faa; margin-bottom: 12px; display: flex; gap: 8px; }
-        .match-badge { background: #e0ecf2; padding: 2px 12px; border-radius: 30px; font-size: 12px; }
+        .match-section {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f0f2f5;
+        }
+        .match-section:last-child { border-bottom: none; }
+        .match-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .match-badge {
+            background: #edf2f7;
+            padding: 1px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .match-badge.same-badge { background: #fde8e8; color: #c0392b; }
+        .match-badge.free-badge { background: #d4ece6; color: #2d6a5e; }
 
-        .course-list { display: flex; flex-wrap: wrap; gap: 12px; }
-        .course-card { background: #f0f8fc; padding: 10px 16px; border-radius: 20px; border-left: 3px solid #7ab8d4; }
-        .course-name { font-weight: 600; color: #5a8faa; }
-        .course-detail { font-size: 12px; color: #8aaec0; margin-top: 4px; }
+        /* 课程卡片 - 用颜色区分 */
+        .course-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .course-card {
+            background: #ebf5ff;
+            padding: 8px 14px;
+            border-radius: 16px;
+            border-left: 4px solid #2b6cb0;
+        }
+        .course-name { font-weight: 600; color: #1a202c; font-size: 13px; }
+        .course-detail { font-size: 11px; color: #718096; margin-top: 2px; }
 
-        /* 时间轴 */
-        .timeline-container { background: #f0f8fc; border-radius: 24px; padding: 16px; margin-top: 12px; }
-        .timeline-day { margin-bottom: 16px; }
-        .timeline-day-header { font-weight: 600; color: #5a7a8a; margin-bottom: 6px; }
-        .timeline-track { background: #e0ecf2; border-radius: 30px; height: 36px; display: flex; overflow: hidden; }
-        .timeline-segment { height: 100%; transition: 0.2s; }
-        .timeline-segment.free { background: #b8dfd0; }
-        .timeline-segment.busy { background: #d4e5ec; }
-        .timeline-segment.same { background: #ffc8a2; }
+        /* ========== 时间轴 ========== */
+        .timeline-container {
+            background: #f7fafc;
+            border-radius: 20px;
+            padding: 16px 16px 12px;
+            margin-top: 8px;
+            border: 1px solid #e8ecf0;
+        }
+        .timeline-day {
+            margin-bottom: 20px;
+        }
+        .timeline-day:last-child { margin-bottom: 0; }
+        .timeline-day-header {
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 6px;
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+        .timeline-track {
+            background: #edf2f7;
+            border-radius: 20px;
+            height: 40px;
+            display: flex;
+            overflow: hidden;
+        }
+        .timeline-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 600;
+            color: white;
+            flex: 1;
+            min-width: 0;
+            letter-spacing: 0.2px;
+            transition: filter 0.15s;
+        }
+        .timeline-segment.free {
+            background: #5cb8a8;
+        }
+        .timeline-segment.busy {
+            background: #e2e8f0;
+            color: #a0aec0;
+        }
+        .timeline-segment.same {
+            background: #e88484;
+        }
+        .timeline-segment .seg-label {
+            font-size: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 3px;
+            max-width: 100%;
+        }
 
-        .legend { display: flex; gap: 20px; margin-top: 16px; justify-content: center; }
-        .legend-dot { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 6px; }
-        .legend-dot.free { background: #b8dfd0; }
-        .legend-dot.busy { background: #d4e5ec; }
-        .legend-dot.same { background: #ffc8a2; }
-        .legend-item { font-size: 12px; color: #718096; }
+        .slot-labels {
+            display: flex;
+            margin-top: 4px;
+            padding: 0 2px;
+        }
+        .slot-label {
+            flex: 1;
+            text-align: center;
+            font-size: 8px;
+            color: #a0aec0;
+            font-weight: 400;
+        }
+        .slot-label.free-label { color: #3d8a7e; font-weight: 600; }
+        .slot-label.same-label { color: #c0392b; font-weight: 600; }
 
-        .free-tag { background: #b8dfd0; color: #2d6a5e; padding: 5px 14px; border-radius: 30px; font-size: 12px; display: inline-block; margin: 4px 6px 0 0; }
+        .free-summary {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .free-tag {
+            background: #edf2f7;
+            color: #4a5568;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .free-tag.same-tag {
+            background: #fde8e8;
+            color: #c0392b;
+        }
+        .free-tag.free-tag {
+            background: #d4ece6;
+            color: #2d6a5e;
+        }
 
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #5a8faa; font-weight: 500; }
-        input, textarea { width: 100%; padding: 12px 16px; border: 1px solid #cde3ec; border-radius: 28px; font-size: 14px; background: white; }
-        textarea { height: 180px; border-radius: 20px; }
-        .btn { background: #7ab8d4; color: white; border: none; padding: 10px 24px; border-radius: 40px; cursor: pointer; margin-right: 10px; }
-        .btn-secondary { background: #d4e5ec; color: #5a7a8a; }
-        .empty-state { text-align: center; padding: 40px; color: #8aaec0; }
-        .footer { text-align: center; padding: 16px; font-size: 12px; color: #8aaec0; background: rgba(255,255,255,0.5); }
-        @media (max-width: 700px) { .match-section { padding: 14px; } .tabs { padding: 12px 16px; } .tab { padding: 6px 14px; } }
+        .legend {
+            display: flex;
+            gap: 28px;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #e8ecf0;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .legend-dot {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border-radius: 5px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        .legend-dot.free { background: #5cb8a8; }
+        .legend-dot.busy { background: #e2e8f0; border: 1px solid #cbd5e0; }
+        .legend-dot.same { background: #e88484; }
+        .legend-item {
+            font-size: 12px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        /* ========== 表单 ========== */
+        .form-group { margin-bottom: 18px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 24px;
+            font-size: 14px;
+            background: white;
+            transition: 0.2s;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #2b6cb0;
+            box-shadow: 0 0 0 3px rgba(43,108,176,0.12);
+        }
+        textarea { height: 160px; border-radius: 18px; font-family: monospace; font-size: 13px; }
+        .btn {
+            background: #2b6cb0;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-right: 8px;
+        }
+        .btn:hover { background: #1a4f7a; box-shadow: 0 4px 12px rgba(43,108,176,0.25); }
+        .btn-secondary {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        .btn-secondary:hover { background: #e2e8f0; box-shadow: none; }
+
+        .hint {
+            background: #f7fafc;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 12px;
+            color: #718096;
+            margin-top: 12px;
+            border: 1px solid #e8ecf0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: #a0aec0;
+            font-size: 14px;
+        }
+        .empty-state .icon { font-size: 40px; margin-bottom: 12px; display: block; }
+        .footer {
+            text-align: center;
+            padding: 14px;
+            font-size: 11px;
+            color: #a0aec0;
+            border-top: 1px solid #e8ecf0;
+            background: #fafbfc;
+        }
+        .schedule-preview {
+            background: #f7fafc;
+            padding: 10px 14px;
+            border-radius: 14px;
+            font-size: 12px;
+            margin-top: 8px;
+            color: #4a5568;
+            font-family: monospace;
+            line-height: 1.6;
+            border: 1px solid #e8ecf0;
+        }
+
+        @media (max-width: 700px) {
+            .header { padding: 20px 20px 16px; }
+            .header h1 { font-size: 20px; }
+            .tabs { padding: 12px 16px 0; }
+            .tab { padding: 6px 14px; font-size: 12px; }
+            .tab-content { padding: 16px 16px 24px; }
+            .match-section { padding: 14px 16px; }
+            .timeline-track { height: 34px; }
+            .timeline-segment .seg-label { font-size: 7px; }
+            .slot-label { font-size: 7px; }
+            .stats { gap: 10px; }
+            .stat-item { font-size: 12px; padding: 4px 12px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="glass-card">
+    <div class="card">
         <div class="header">
-            <h1>👭 学习搭子匹配器</h1>
-            <p>🌸 找到一起上课、一起自习的小伙伴</p>
-            <div class="stats" id="statsPanel"><div class="stat-badge">👥 同学 <span id="studentCount">0</span> 人</div><div class="stat-badge">📚 相同课 <span id="sameCourseCount">0</span></div><div class="stat-badge">⏰ 空闲 <span id="freeTimeCount">0</span></div></div>
+            <h1>学习搭子匹配器</h1>
+            <p>对比课表，找到可以一起上课或自习的伙伴</p>
+            <div class="stats" id="statsPanel">
+                <div class="stat-item">👤 同学 <strong id="studentCount">0</strong> 人</div>
+                <div class="stat-item">📚 相同课程 <strong id="sameCourseCount" class="highlight">0</strong></div>
+                <div class="stat-item">⏰ 空闲时段 <strong id="freeTimeCount" class="highlight-green">0</strong></div>
+            </div>
         </div>
-        <div class="tabs"><div class="tab active" data-tab="match">🌸 匹配结果</div><div class="tab" data-tab="add">➕ 添加同学</div><div class="tab" data-tab="list">📋 同学列表</div><div class="tab" data-tab="myself">📖 我的课表</div></div>
+
+        <div class="tabs">
+            <span class="tab active" data-tab="match">匹配结果</span>
+            <span class="tab" data-tab="add">添加同学</span>
+            <span class="tab" data-tab="list">同学列表</span>
+            <span class="tab" data-tab="myself">我的课表</span>
+        </div>
+
         <div id="matchTab" class="tab-content active"><div id="matchResults"></div></div>
-        <div id="addTab" class="tab-content"><div class="form-group"><label>📝 同学姓名</label><input type="text" id="studentName" placeholder="例：小羽"></div><div class="form-group"><label>📚 课表内容</label><textarea id="studentSchedule" placeholder="周一1-2节 课程名 教室&#10;周二3-4节 课程名 教室"></textarea></div><button class="btn" onclick="addStudent()">✨ 添加同学</button><button class="btn btn-secondary" onclick="clearForm()">清空</button><div class="empty-state" style="padding:12px; text-align:left; font-size:12px">💡 格式：周一1-2节 高等数学 教2-101</div></div>
+        <div id="addTab" class="tab-content">
+            <div class="form-group">
+                <label>姓名</label>
+                <input type="text" id="studentName" placeholder="例：张明">
+            </div>
+            <div class="form-group">
+                <label>课表</label>
+                <textarea id="studentSchedule" placeholder="周一1-2节 课程名 教室"></textarea>
+            </div>
+            <button class="btn" onclick="addStudent()">添加</button>
+            <button class="btn btn-secondary" onclick="clearForm()">清空</button>
+            <div class="hint">格式：周一1-2节 高等数学 教2-101（每行一门课）</div>
+        </div>
         <div id="listTab" class="tab-content"><div id="studentList"></div></div>
-        <div id="myselfTab" class="tab-content"><div id="myScheduleDisplay"></div><button class="btn" onclick="resetMySchedule()" style="margin-top:12px">🔄 重置默认课表</button></div>
-        <div class="footer">🍃 数据保存在浏览器中</div>
+        <div id="myselfTab" class="tab-content">
+            <div id="myScheduleDisplay"></div>
+            <button class="btn" onclick="resetMySchedule()" style="margin-top:12px;">重置默认课表</button>
+        </div>
+        <div class="footer">数据保存在浏览器本地</div>
     </div>
 </div>
 <script>
-    let students = {}, myCourses = null;
+    let students = {};
+    let myCourses = null;
+
     const weekdayMap = {"周一":1,"周二":2,"周三":3,"周四":4,"周五":5};
     const weekdayNames = ["","周一","周二","周三","周四","周五"];
-    const slotTimes = {1:"8:00",2:"8:00",3:"9:50",4:"9:50",5:"13:30",6:"13:30",7:"15:20",8:"15:20",9:"18:30",10:"18:30",11:"20:20",12:"20:20"};
-    function parseSchedule(t){let c=[];for(let l of t.trim().split('\n')){l=l.trim();if(!l)continue;let m=l.match(/([周一二三四五]+)(\d+)-(\d+)节\s+(.+?)\s+(\S+)$/);if(m){let w=null;for(let k in weekdayMap)if(m[1].includes(k)){w=weekdayMap[k];break}if(w&&w>=1&&w<=5)c.push({name:m[4],weekday:w,startSlot:parseInt(m[2]),endSlot:parseInt(m[3]),room:m[5]})}}return c}
-    function getCourseKey(c){return c.name+'|'+c.room}
-    function getBusy(courses){let b={};for(let d=1;d<=5;d++){b[d]={};for(let s=1;s<=12;s++)b[d][s]=false}for(let c of courses)for(let s=c.startSlot;s<=c.endSlot;s++)b[c.weekday][s]=true;return b}
-    function findSame(my,their){let myMap={};for(let c of my){let k=getCourseKey(c);if(!myMap[k])myMap[k]=[];myMap[k].push(c)}let same=[];for(let c of their){let k=getCourseKey(c);if(myMap[k]){for(let mc of myMap[k]){if(mc.weekday===c.weekday&&mc.startSlot===c.startSlot){same.push({name:c.name,room:c.room,weekday:c.weekday,weekdayName:weekdayNames[c.weekday],timeRange:`${c.startSlot}-${c.endSlot}节`});break}}}}return same}
-    function findFree(my,their){let myB=getBusy(my),theirB=getBusy(their),free=[];for(let d=1;d<=5;d++)for(let s=1;s<=12;s++)if(!myB[d][s]&&!theirB[d][s])free.push({day:d,dayName:weekdayNames[d],slot:s,timeRange:slotTimes[s]});return free}
-    function renderTimeline(my,their,same){let myB=getBusy(my),theirB=getBusy(their),sameSet=new Set();for(let c of same)sameSet.add(c.weekday+'|'+c.timeRange.split('-')[0]);let html='<div class="timeline-container"><div class="legend"><span class="legend-item"><span class="legend-dot free"></span>共同空闲</span><span class="legend-item"><span class="legend-dot busy"></span>有课</span><span class="legend-item"><span class="legend-dot same"></span>相同课程</span></div>';for(let d=1;d<=5;d++){html+=`<div class="timeline-day"><div class="timeline-day-header">📅 ${weekdayNames[d]}</div><div class="timeline-track">`;for(let s=1;s<=12;s++){let isSame=sameSet.has(d+'|'+s),isFree=!myB[d][s]&&!theirB[d][s];let cls='busy';if(isSame)cls='same';else if(isFree)cls='free';html+=`<div class="timeline-segment ${cls}" style="width:8.33%" title="${weekdayNames[d]} ${slotTimes[s]}"></div>`}html+=`</div></div>`}html+=`</div>`;return html}
-    function getDefaultMy(){return`周一1-2节 计算机网络 n113\n周一3-4节 人工智能 n522\n周一5-6节 五彩缤纷的现代多媒体生活（通核）8302\n周二1-2节 计算机组成原理 n217\n周二3-4节 数据库原理 n213\n周二5-6节 社会调查方法（混合课堂）7307\n周二7-8节 毛泽东思想和中国特色社会主义 n111\n周三1-2节 Java语言程序设计 n213\n周三3-4节 机器学习 n323\n周三5-6节 形势与政策（4）n215\n周四1-2节 Java语言程序设计 n213\n周四3-4节 数据库原理 n213\n周四5-6节 计算机网络 n217\n周四11-12节 计算机组成原理 n112\n周五1-2节 Python程序设计 n113\n周五3-4节 毛泽东思想和中国特色社会主义 n111\n周五5-6节 传播心理学 8214\n周五7-8节 大学体育4 舞二`}
-    function loadMy(){let s=localStorage.getItem('my_schedule_text_v2');if(s)myCourses=parseSchedule(s);else myCourses=parseSchedule(getDefaultMy());return myCourses}
-    function saveMy(t){localStorage.setItem('my_schedule_text_v2',t);myCourses=parseSchedule(t);renderAll()}
-    function resetMy(){if(confirm('重置默认课表？'))saveMy(getDefaultMy())}
-    function loadStudents(){let s=localStorage.getItem('study_buddy_v3');if(s)students=JSON.parse(s)}
-    function saveStudents(){localStorage.setItem('study_buddy_v3',JSON.stringify(students));renderAll()}
-    function addStudent(){let n=document.getElementById('studentName').value.trim(),t=document.getElementById('studentSchedule').value.trim();if(!n){alert('请输入同学姓名');return}if(!t){alert('请输入课表');return}let c=parseSchedule(t);if(!c.length){alert('课表解析失败，检查格式');return}students[n]={courses:c,rawText:t,addedTime:new Date().toISOString()};saveStudents();clearForm();document.querySelector('.tab[data-tab="match"]').click()}
-    function deleteStudent(n){if(confirm(`删除 ${n}？`)){delete students[n];saveStudents()}}
-    function clearForm(){document.getElementById('studentName').value='';document.getElementById('studentSchedule').value=''}
-    function renderMatch(){let names=Object.keys(students),container=document.getElementById('matchResults');if(!names.length){container.innerHTML='<div class="empty-state">🌸 还没有同学～ 点击「添加同学」录入课表吧</div>';document.getElementById('studentCount').innerText='0';document.getElementById('sameCourseCount').innerText='0';document.getElementById('freeTimeCount').innerText='0';return}let totalSame=0,totalFree=0,html='';for(let name of names){let s=students[name],same=findSame(myCourses,s.courses),free=findFree(myCourses,s.courses);totalSame+=same.length;totalFree+=free.length;html+=`<div class="student-card"><div class="student-header"><span>👤 ${name}</span><button class="delete-btn" onclick="deleteStudent('${name}')">删除</button></div><div class="match-section"><div class="match-title">📖 相同课程 <span class="match-badge">${same.length}</span></div><div class="course-list">`;if(same.length)for(let c of same)html+=`<div class="course-card"><div class="course-name">${c.name}</div><div class="course-detail">📍 ${c.room} · ${c.weekdayName} ${c.timeRange}</div></div>`;else html+=`<div class="empty-state" style="padding:12px">✨ 暂无相同课程～可以约着一起自习</div>`;html+=`</div></div><div class="match-section"><div class="match-title">⏰ 共同空闲 <span class="match-badge">${free.length}</span></div>`;html+=renderTimeline(myCourses,s.courses,same);if(free.length){html+=`<div class="free-time-summary" style="margin-top:12px">`;for(let f of free.slice(0,6))html+=`<span class="free-tag">${f.dayName} ${f.timeRange}</span>`;if(free.length>6)html+=`<span class="free-tag">+${free.length-6} 更多</span>`;html+=`</div>`}else html+=`<div class="empty-state" style="padding:12px">😢 暂无共同空闲时间～</div>`;html+=`</div></div>`}document.getElementById('studentCount').innerText=names.length;document.getElementById('sameCourseCount').innerText=totalSame;document.getElementById('freeTimeCount').innerText=totalFree;container.innerHTML=html}
-    function renderList(){let names=Object.keys(students),container=document.getElementById('studentList');if(!names.length){container.innerHTML='<div class="empty-state">📭 还没有同学～</div>';return}let html='';for(let name of names){let s=students[name];html+=`<div class="student-card"><div class="student-header"><span>👤 ${name}</span><button class="delete-btn" onclick="deleteStudent('${name}')">删除</button></div><div class="match-section"><div class="course-list"><span class="free-tag" style="background:#d4e5ec">📚 ${s.courses.length}门课</span><span class="free-tag" style="background:#d4e5ec">📅 ${new Date(s.addedTime).toLocaleDateString()}</span></div><div class="empty-state" style="padding:8px 0; font-size:12px">${s.rawText.split('\n').slice(0,3).join('<br>')}${s.rawText.split('\n').length>3?'<br>...':''}</div></div></div>`}container.innerHTML=html}
-    function renderMy(){let saved=localStorage.getItem('my_schedule_text_v2')||getDefaultMy();document.getElementById('myScheduleDisplay').innerHTML=`<textarea id="myEditor" rows="12" style="width:100%; border-radius:24px; padding:14px;">${saved}</textarea><button class="btn" onclick="updateMy()" style="margin-top:12px">💾 保存我的课表</button><div class="empty-state" style="padding:12px; text-align:left">💡 修改后点击保存，匹配结果自动更新</div>`}
-    function updateMy(){let t=document.getElementById('myEditor').value;let c=parseSchedule(t);if(!c.length){alert('课表解析失败');return}saveMy(t);alert(`✅ 已更新 ${c.length} 门课程`)}
-    function renderAll(){renderMatch();renderList();renderMy()}
-    function initTabs(){document.querySelectorAll('.tab').forEach(t=>{t.addEventListener('click',()=>{let id=t.dataset.tab;document.querySelectorAll('.tab').forEach(tt=>tt.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));document.getElementById(id+'Tab').classList.add('active');if(id==='list')renderList();if(id==='match')renderMatch();if(id==='myself')renderMy()})})}
-    loadMy();loadStudents();initTabs();renderAll();
+    const slotTimes = {
+        1:"8:00",2:"8:00",3:"9:50",4:"9:50",
+        5:"13:30",6:"13:30",7:"15:20",8:"15:20",
+        9:"18:30",10:"18:30",11:"20:20",12:"20:20"
+    };
+    const slotEndTimes = {
+        1:"9:40",2:"9:40",3:"11:30",4:"11:30",
+        5:"15:10",6:"15:10",7:"17:00",8:"17:00",
+        9:"20:10",10:"20:10",11:"22:00",12:"22:00"
+    };
+
+    function parseSchedule(text) {
+        const courses = [];
+        for (let line of text.trim().split('\n')) {
+            line = line.trim();
+            if (!line) continue;
+            const m = line.match(/([周一二三四五]+)(\d+)-(\d+)节\s+(.+?)\s+(\S+)$/);
+            if (m) {
+                let w = null;
+                for (let k in weekdayMap) {
+                    if (m[1].includes(k)) { w = weekdayMap[k]; break; }
+                }
+                if (w && w >= 1 && w <= 5) {
+                    courses.push({
+                        name: m[4],
+                        weekday: w,
+                        startSlot: parseInt(m[2]),
+                        endSlot: parseInt(m[3]),
+                        room: m[5]
+                    });
+                }
+            }
+        }
+        return courses;
+    }
+
+    function getCourseKey(c) { return c.name + '|' + c.room; }
+
+    function getBusyMap(courses) {
+        const busy = {};
+        for (let d = 1; d <= 5; d++) {
+            busy[d] = {};
+            for (let s = 1; s <= 12; s++) busy[d][s] = false;
+        }
+        for (let c of courses) {
+            for (let s = c.startSlot; s <= c.endSlot; s++) {
+                busy[c.weekday][s] = true;
+            }
+        }
+        return busy;
+    }
+
+    function findSameCourses(my, their) {
+        const myMap = {};
+        for (let c of my) {
+            const k = getCourseKey(c);
+            if (!myMap[k]) myMap[k] = [];
+            myMap[k].push(c);
+        }
+        const same = [];
+        for (let c of their) {
+            const k = getCourseKey(c);
+            if (myMap[k]) {
+                for (let mc of myMap[k]) {
+                    if (mc.weekday === c.weekday && mc.startSlot === c.startSlot) {
+                        same.push({
+                            name: c.name,
+                            room: c.room,
+                            weekday: c.weekday,
+                            weekdayName: weekdayNames[c.weekday],
+                            startSlot: c.startSlot,
+                            endSlot: c.endSlot,
+                            timeRange: c.startSlot + '-' + c.endSlot + '节'
+                        });
+                        break;
+                    }
+                }
+            }
+        }
+        return same;
+    }
+
+    function getMergedFreeTime(myCourses, theirCourses) {
+        const myBusy = getBusyMap(myCourses);
+        const theirBusy = getBusyMap(theirCourses);
+        const freeSlots = [];
+
+        for (let day = 1; day <= 5; day++) {
+            let dayFree = [];
+            for (let slot = 1; slot <= 12; slot++) {
+                if (!myBusy[day][slot] && !theirBusy[day][slot]) {
+                    dayFree.push(slot);
+                }
+            }
+            if (dayFree.length === 0) continue;
+
+            let merged = [];
+            let start = dayFree[0];
+            let end = dayFree[0];
+            for (let i = 1; i < dayFree.length; i++) {
+                if (dayFree[i] === end + 1) {
+                    end = dayFree[i];
+                } else {
+                    merged.push({ startSlot: start, endSlot: end });
+                    start = dayFree[i];
+                    end = dayFree[i];
+                }
+            }
+            merged.push({ startSlot: start, endSlot: end });
+
+            for (let m of merged) {
+                freeSlots.push({
+                    day: day,
+                    dayName: weekdayNames[day],
+                    startSlot: m.startSlot,
+                    endSlot: m.endSlot,
+                    startTime: slotTimes[m.startSlot] || '?',
+                    endTime: slotEndTimes[m.endSlot] || '?',
+                    timeDisplay: (slotTimes[m.startSlot] || '?') + ' - ' + (slotEndTimes[m.endSlot] || '?')
+                });
+            }
+        }
+        return freeSlots;
+    }
+
+    function getDefaultMySchedule() {
+        return `周一1-2节 计算机网络 n113
+周一3-4节 人工智能 n522
+周一5-6节 五彩缤纷的现代多媒体生活（通核）8302
+周二1-2节 计算机组成原理 n217
+周二3-4节 数据库原理 n213
+周二5-6节 社会调查方法（混合课堂）7307
+周二7-8节 毛泽东思想和中国特色社会主义 n111
+周三1-2节 Java语言程序设计 n213
+周三3-4节 机器学习 n323
+周三5-6节 形势与政策（4）n215
+周四1-2节 Java语言程序设计 n213
+周四3-4节 数据库原理 n213
+周四5-6节 计算机网络 n217
+周四11-12节 计算机组成原理 n112
+周五1-2节 Python程序设计 n113
+周五3-4节 毛泽东思想和中国特色社会主义 n111
+周五5-6节 传播心理学 8214
+周五7-8节 大学体育4 舞二`;
+    }
+
+    function loadMyCourses() {
+        const saved = localStorage.getItem('my_schedule_text_v6');
+        if (saved) myCourses = parseSchedule(saved);
+        else myCourses = parseSchedule(getDefaultMySchedule());
+        return myCourses;
+    }
+    function saveMySchedule(text) {
+        localStorage.setItem('my_schedule_text_v6', text);
+        myCourses = parseSchedule(text);
+        renderAll();
+    }
+    function resetMySchedule() {
+        if (confirm('重置为默认课表？')) saveMySchedule(getDefaultMySchedule());
+    }
+    function loadStudents() {
+        const saved = localStorage.getItem('study_buddy_v7');
+        if (saved) students = JSON.parse(saved);
+    }
+    function saveStudents() {
+        localStorage.setItem('study_buddy_v7', JSON.stringify(students));
+        renderAll();
+    }
+
+    function addStudent() {
+        const name = document.getElementById('studentName').value.trim();
+        const text = document.getElementById('studentSchedule').value.trim();
+        if (!name) { alert('请输入姓名'); return; }
+        if (!text) { alert('请输入课表'); return; }
+        const courses = parseSchedule(text);
+        if (courses.length === 0) { alert('课表解析失败，请检查格式'); return; }
+        students[name] = { courses: courses, rawText: text, addedTime: new Date().toISOString() };
+        saveStudents();
+        clearForm();
+        document.querySelector('.tab[data-tab="match"]').click();
+    }
+    function deleteStudent(name) {
+        if (confirm('删除 ' + name + ' ？')) {
+            delete students[name];
+            saveStudents();
+        }
+    }
+    function clearForm() {
+        document.getElementById('studentName').value = '';
+        document.getElementById('studentSchedule').value = '';
+    }
+
+    function renderMatchResults() {
+        const names = Object.keys(students);
+        const container = document.getElementById('matchResults');
+        if (names.length === 0) {
+            container.innerHTML = '<div class="empty-state"><span class="icon">📋</span>暂无同学数据<br><span style="font-size:13px;">点击「添加同学」录入课表</span></div>';
+            document.getElementById('studentCount').innerText = '0';
+            document.getElementById('sameCourseCount').innerText = '0';
+            document.getElementById('freeTimeCount').innerText = '0';
+            return;
+        }
+
+        let totalSame = 0, totalFree = 0, html = '';
+
+        for (let name of names) {
+            const s = students[name];
+            const same = findSameCourses(myCourses, s.courses);
+            const freeSlots = getMergedFreeTime(myCourses, s.courses);
+            totalSame += same.length;
+            totalFree += freeSlots.length;
+
+            html += `<div class="student-card">
+                <div class="student-header">
+                    <span class="student-name">${name} <span class="badge">${s.courses.length}门课</span></span>
+                    <button class="delete-btn" onclick="deleteStudent('${name}')">删除</button>
+                </div>
+                <div class="match-section">
+                    <div class="match-title">相同课程 <span class="match-badge same-badge">${same.length}</span></div>
+                    <div class="course-list">`;
+            if (same.length) {
+                for (let c of same) {
+                    html += `<div class="course-card">
+                        <div class="course-name">${c.name}</div>
+                        <div class="course-detail">${c.room} · ${c.weekdayName} ${c.timeRange}</div>
+                    </div>`;
+                }
+            } else {
+                html += `<span style="color:#a0aec0; font-size:13px;">暂无相同课程</span>`;
+            }
+            html += `</div></div>`;
+
+            // 空闲时间
+            html += `<div class="match-section">
+                <div class="match-title">共同空闲 <span class="match-badge free-badge">${freeSlots.length}</span></div>`;
+
+            if (freeSlots.length > 0) {
+                const sameByDay = {};
+                for (let c of same) {
+                    if (!sameByDay[c.weekday]) sameByDay[c.weekday] = [];
+                    sameByDay[c.weekday].push(c);
+                }
+
+                html += `<div class="timeline-container">`;
+                for (let d = 1; d <= 5; d++) {
+                    const dayFree = freeSlots.filter(f => f.day === d);
+                    const daySame = sameByDay[d] || [];
+
+                    html += `<div class="timeline-day">
+                        <div class="timeline-day-header">${weekdayNames[d]}</div>
+                        <div class="timeline-track">`;
+
+                    for (let s = 1; s <= 12; s++) {
+                        const inFree = dayFree.some(f => s >= f.startSlot && s <= f.endSlot);
+                        const inSame = daySame.some(c => s >= c.startSlot && s <= c.endSlot);
+                        let cls = 'busy';
+                        let label = '';
+                        if (inSame) { cls = 'same'; }
+                        else if (inFree) {
+                            cls = 'free';
+                            const segStart = dayFree.find(f => s === f.startSlot);
+                            if (segStart) label = segStart.timeDisplay;
+                        }
+                        html += `<div class="timeline-segment ${cls}"><span class="seg-label">${label}</span></div>`;
+                    }
+                    html += `</div>`;
+
+                    // 节次数字
+                    html += `<div class="slot-labels">`;
+                    for (let s = 1; s <= 12; s++) {
+                        const inFree = dayFree.some(f => s >= f.startSlot && s <= f.endSlot);
+                        const inSame = daySame.some(c => s >= c.startSlot && s <= c.endSlot);
+                        let cls = '';
+                        if (inSame) cls = 'same-label';
+                        else if (inFree) cls = 'free-label';
+                        html += `<div class="slot-label ${cls}">${s}</div>`;
+                    }
+                    html += `</div></div>`;
+                }
+
+                // 汇总
+                html += `<div class="free-summary">`;
+                for (let f of freeSlots) {
+                    const isSame = same.some(c => c.weekday === f.day &&
+                        f.startSlot <= c.startSlot && f.endSlot >= c.endSlot);
+                    const cls = isSame ? 'free-tag same-tag' : 'free-tag';
+                    const label = isSame ? '● ' : '○ ';
+                    html += `<span class="${cls}">${label}${f.dayName} ${f.timeDisplay}</span>`;
+                }
+                html += `</div>`;
+
+                html += `
+                    <div class="legend">
+                        <span class="legend-item"><span class="legend-dot free"></span>共同空闲</span>
+                        <span class="legend-item"><span class="legend-dot busy"></span>有课</span>
+                        <span class="legend-item"><span class="legend-dot same"></span>相同课程</span>
+                    </div>
+                </div>`;
+            } else {
+                html += `<div style="color:#a0aec0; padding:8px 0;">暂无共同空闲</div>`;
+            }
+            html += `</div></div>`;
+        }
+
+        document.getElementById('studentCount').innerText = names.length;
+        document.getElementById('sameCourseCount').innerText = totalSame;
+        document.getElementById('freeTimeCount').innerText = totalFree;
+        container.innerHTML = html;
+    }
+
+    function renderStudentList() {
+        const names = Object.keys(students);
+        const container = document.getElementById('studentList');
+        if (names.length === 0) {
+            container.innerHTML = '<div class="empty-state"><span class="icon">📭</span>暂无同学数据</div>';
+            return;
+        }
+        let html = '';
+        for (let name of names) {
+            const s = students[name];
+            html += `<div class="student-card">
+                <div class="student-header">
+                    <span class="student-name">${name} <span class="badge">${s.courses.length}门课</span></span>
+                    <button class="delete-btn" onclick="deleteStudent('${name}')">删除</button>
+                </div>
+                <div style="padding:16px 20px;">
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:6px;">
+                        <span style="font-size:13px; color:#4a5568;">📅 ${new Date(s.addedTime).toLocaleDateString()}</span>
+                    </div>
+                    <div class="schedule-preview">${s.rawText.split('\n').slice(0, 4).join('<br>')}${s.rawText.split('\n').length > 4 ? '<br>...' : ''}</div>
+                </div>
+            </div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function renderMySchedule() {
+        const saved = localStorage.getItem('my_schedule_text_v6') || getDefaultMySchedule();
+        document.getElementById('myScheduleDisplay').innerHTML = `
+            <textarea id="myEditor" rows="12" style="width:100%; border-radius:18px; padding:14px; border:2px solid #e2e8f0; font-size:13px;">${saved}</textarea>
+            <button class="btn" onclick="updateMySchedule()" style="margin-top:12px;">保存</button>
+            <div class="hint">修改后点击保存，匹配结果自动更新</div>
+        `;
+    }
+    function updateMySchedule() {
+        const text = document.getElementById('myEditor').value;
+        const c = parseSchedule(text);
+        if (c.length === 0) { alert('课表解析失败，请检查格式'); return; }
+        saveMySchedule(text);
+        alert('已更新 ' + c.length + ' 门课程');
+    }
+
+    function renderAll() {
+        renderMatchResults();
+        renderStudentList();
+        renderMySchedule();
+    }
+
+    function initTabs() {
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const id = tab.dataset.tab;
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(id + 'Tab').classList.add('active');
+                if (id === 'list') renderStudentList();
+                if (id === 'match') renderMatchResults();
+                if (id === 'myself') renderMySchedule();
+            });
+        });
+    }
+
+    loadMyCourses();
+    loadStudents();
+    initTabs();
+    renderAll();
 </script>
 </body>
 </html>

@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="3829fdf8-de10-4c49-b7e0-93d7c6e04fe1" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_value.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/class_value.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/course_schedule.html" beforeDir="false" afterPath="$PROJECT_DIR$/course_schedule.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/group_project.html" beforeDir="false" afterPath="$PROJECT_DIR$/group_project.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/schedule-parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/schedule-parser.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/study_buddy.html" beforeDir="false" afterPath="$PROJECT_DIR$/study_buddy.html" afterDir="false" />
     </list>
@@ -18,6 +17,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -33,22 +33,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JavaScript 调试.study_buddy.html.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python.class_value.executor": "Run",
-    "Python.schedule-parser.executor": "Run",
-    "Python.study_buddy.executor": "Run",
-    "Python.test.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript 调试.study_buddy.html.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python.class_value.executor&quot;: &quot;Run&quot;,
+    &quot;Python.schedule-parser.executor&quot;: &quot;Run&quot;,
+    &quot;Python.study_buddy.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="schedule-parser" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="课表解析项目" />
@@ -96,7 +97,7 @@
       <option name="presentableId" value="Default" />
       <updated>1780121294816</updated>
       <workItem from="1780121295920" duration="5987000" />
-      <workItem from="1780202806923" duration="3556000" />
+      <workItem from="1780202806923" duration="4141000" />
     </task>
     <servers />
   </component>
@@ -107,6 +108,6 @@
     <SUITE FILE_PATH="coverage/$class_value.coverage" NAME="class_value 覆盖结果" MODIFIED="1780127304433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$study_buddy.coverage" NAME="study_buddy 覆盖结果" MODIFIED="1780203178664" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/$test.coverage" NAME="test 覆盖结果" MODIFIED="1780121702297" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/$schedule_parser.coverage" NAME="schedule-parser 覆盖结果" MODIFIED="1780207245660" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/$schedule_parser.coverage" NAME="schedule-parser 覆盖结果" MODIFIED="1780207835078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
